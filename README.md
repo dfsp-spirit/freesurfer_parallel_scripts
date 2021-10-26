@@ -28,7 +28,7 @@ This involves running the `recon-all` pipeline, which takes 12 - 20h per subject
 We recommend the following steps:
 
 * First convert the raw DICOM files to NIFTI format using [dcm2nii](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage).
-* Use the script cross-sectional/recon-all-parallel.bash from this repository to run recon-all for all NIFTI files in parallel.
+* Use the script [cross-sectional/preproc_reconall_parallel.bash](./cross-sectional/preproc_reconall_parallel.bash) from this repository to run recon-all for all NIFTI files in parallel.
 * If you want to add a global brain measure (like total brain volume) as a covariate during modeling during the statistical analysis later, run the script extractTotalBrainMeasures.bash to compute the measures for all subjects.
 
 Note: If you will get data for a second wave later and intend to run a longitudinal analysis then, please read about the longitudinal pipeline now to avoid duplicate work later.
