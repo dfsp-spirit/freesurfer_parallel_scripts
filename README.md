@@ -16,8 +16,6 @@ You will need a multi-core computer (almost all modern machines are multi-core, 
 * A working FreeSurfer 6 or 7 installation (including proper setup for the bash shell)
 * GNU parallel, which is used for parallelzation in all of the scripts
 
-If you intend to use recent MacOS versions, you may want to read our [notes on MacOS](./NOTES_ON_FS_MACOS.md)
-
 ## The scripts
 
 
