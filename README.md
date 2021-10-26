@@ -51,7 +51,14 @@ The first 2 steps use a subjects file, but part 3 requires a QDEC table in longi
 
 ### Tools
 
-The [tools directory](./tools/) contains many scripts to perform various tasks that frequently come up in computational neuroimaging. Have a look and see what's available.
+The [tools directory](./tools/) contains many scripts to perform various tasks that frequently come up in computational neuroimaging. Have a look and see what's available. It includes scripts to:
+
+* map data from native to standard space in parallel for many subjects
+* downsample meshes
+* compute local gyrification index (lGI), both for cross-sectional and longitudinal subjects
+* apply an atlas available as an fsaverage parcellation to a subject (in native space)
+* ...
+
 
 ## Detailed usage instructions
 
