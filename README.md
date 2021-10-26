@@ -25,15 +25,23 @@ An example would be a quad-core computer with 12 GB of RAM (4x2 GB for FreeSurfe
 
 This involves running the `recon-all` pipeline, which takes 12 - 20h per subject. Typically `qcache` is also run as part of the pipeline, to map the resulting data (like per-vertex cortical thickness in native space) to standard space (fsaverage).
 
-We recommend to first convert the raw DICOM files to NIFTI format using [dcm2nii](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage), and then use the script cross-sectional/recon-all-parallel.bash from this repository to run recon-all for all NIFTI files in parallel.
+We recommend the following steps:
 
-See below if you will get data for a second wave later and intend to run a longitudinal analysis then.
+* First convert the raw DICOM files to NIFTI format using [dcm2nii](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage).
+* Use the script cross-sectional/recon-all-parallel.bash from this repository to run recon-all for all NIFTI files in parallel.
+* If you want to add a global brain measure (like total brain volume) as a covariate during modeling during the statistical analysis later, run the script extractTotalBrainMeasures.bash to compute the measures for all subjects.
+
+Note: If you will get data for a second wave later and intend to run a longitudinal analysis then, please read about the longitudinal pipeline now to avoid duplicate work later.
 
 
 ### Running the FreeSurfer longitudinal pipeline (several time points / scans per participant)
 
 This requires first running the cross-sectional `recon-all` pipeline for all time points you have. If a subject is named `subject1` and you have MRI scans from two time points, the NIFTI input files should be called `subject1_MR1.nii` and `subject1_MR2.nii` before you run the cross-sectional pipeline, so that you get two output directories named `subject1_MR1` and `subject1_MR2`.
 
-Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_longitudinal_pipeline.bash](./longitudinal/fs_longitudinal_pipeline.bash) from this repo.
+Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_longitudinal_pipeline.bash](./longitudinal/fs_longitudinal_pipeline.bash) from this repo. The script performs 3 tasks which can be run independently, and we recommend to run one after the other and check whether everything finished successfully before moving on to the next step. The 3 steps are:
+
+* Creating an inter-subject template brain from all scans / time points for each subject. Creates a directory named `subject1`.
+* Mapping the data from the time points (directories `subject1_MR1` and `subject1_MR2`) to the template, creating directories `subject1_MR1.long.subject1` and `subject1_MR2.long.subject1`.
+* Computing the change between the timepoints for one or several descriptors (cortical thickness, surface area, ...).
 
 
