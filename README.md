@@ -32,7 +32,7 @@ We recommend the following steps:
 
 * First convert the raw DICOM files to NIFTI format using [dcm2nii](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage).
 * Use the script [cross-sectional/preproc_reconall_parallel.bash](./cross-sectional/preproc_reconall_parallel.bash) from this repository to run recon-all for all NIFTI files in parallel.
-* If you want to add a global brain measure (like total brain volume) as a covariate during modeling during the statistical analysis later, run the script [tools/extract_total_brain_measures.bash](./tools/extract_total_brain_measures.bash) to compute the measures for all subjects.
+* If you want to add a global brain measure (like total brain volume) as a covariate during modeling later, run the script [tools/extract_total_brain_measures.bash](./tools/extract_total_brain_measures.bash) to compute the measures for all subjects.
 
 Note: If you will get data for a second wave later and intend to run a longitudinal analysis then, please read about the longitudinal pipeline now to avoid duplicate work later.
 
@@ -46,6 +46,8 @@ Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_
 1) Creating an inter-subject template brain from all scans / time points for each subject. Creates a directory named `subject1`.
 2) Mapping the data from the time points (directories `subject1_MR1` and `subject1_MR2`) to the template, creating directories `subject1_MR1.long.subject1` and `subject1_MR2.long.subject1`.
 3) Computing the change between the timepoints for one or several descriptors (cortical thickness, surface area, ...).
+
+The first 2 steps use a subjects file, but part 3 requires a QDEC table in longitudinal format that holds information on the age of each subject at each timepoint, so that the inter-scan interval can be computed. If you have a more typical demographics table and need to create the QDEC file from that format, I recommend to use [R](https://www.r-project.org/). There is a function named `demographics.to.qdec.table.dat` in the [fsbrain package](https://github.com/dfsp-spirit/fsbrain) that makes this tedious and error-prone process a lot easier.
 
 ### Tools
 
