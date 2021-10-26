@@ -47,7 +47,7 @@ Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_
 2) Mapping the data from the time points (directories `subject1_MR1` and `subject1_MR2`) to the template, creating directories `subject1_MR1.long.subject1` and `subject1_MR2.long.subject1`.
 3) Computing the change between the timepoints for one or several descriptors (cortical thickness, surface area, ...).
 
-The first 2 steps use a subjects file, but part 3 requires a QDEC table in longitudinal format that holds information on the age of each subject at each timepoint, so that the inter-scan interval can be computed. If you have a more typical demographics table instead and need to create the QDEC file from that format, I recommend to use [R](https://www.r-project.org/). There is a function named `demographics.to.qdec.table.dat` in the [fsbrain package](https://github.com/dfsp-spirit/fsbrain) that makes this tedious and error-prone process a lot easier.
+The first 2 steps use a subjects file, but part 3 requires a QDEC table in longitudinal format that holds information on the age of each subject at each timepoint, so that the inter-scan interval can be computed. If you have a more typical demographics table instead and need to create the QDEC file from that format, I recommend to use [R](https://www.r-project.org/). There is a function named `demographics.to.qdec.table.dat` in the [fsbrain package](https://github.com/dfsp-spirit/fsbrain) that makes the tedious and error-prone conversion process a lot easier.
 
 ### Tools
 
