@@ -34,6 +34,6 @@ See below if you will get data for a second wave later and intend to run a longi
 
 This requires first running the cross-sectional `recon-all` pipeline for all time points you have. If a subject is named `subject1` and you have MRI scans from two time points, the NIFTI input files should be called `subject1_MR1.nii` and `subject1_MR2.nii` before you run the cross-sectional pipeline, so that you get two output directories named `subject1_MR1` and `subject1_MR2`.
 
-Then, you can run the longitudinal pipeline using the script 
+Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_longitudinal_pipeline.bash](./longitudinal/fs_longitudinal_pipeline.bash) from this repo.
 
 
