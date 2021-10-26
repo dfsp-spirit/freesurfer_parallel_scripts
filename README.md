@@ -40,8 +40,8 @@ This requires first running the cross-sectional `recon-all` pipeline for all tim
 
 Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_longitudinal_pipeline.bash](./longitudinal/fs_longitudinal_pipeline.bash) from this repo. The script performs 3 tasks which can be run independently, and we recommend to run one after the other and check whether everything finished successfully before moving on to the next step. The 3 steps are:
 
-* Creating an inter-subject template brain from all scans / time points for each subject. Creates a directory named `subject1`.
-* Mapping the data from the time points (directories `subject1_MR1` and `subject1_MR2`) to the template, creating directories `subject1_MR1.long.subject1` and `subject1_MR2.long.subject1`.
-* Computing the change between the timepoints for one or several descriptors (cortical thickness, surface area, ...).
+1) Creating an inter-subject template brain from all scans / time points for each subject. Creates a directory named `subject1`.
+2) Mapping the data from the time points (directories `subject1_MR1` and `subject1_MR2`) to the template, creating directories `subject1_MR1.long.subject1` and `subject1_MR2.long.subject1`.
+3) Computing the change between the timepoints for one or several descriptors (cortical thickness, surface area, ...).
 
 
