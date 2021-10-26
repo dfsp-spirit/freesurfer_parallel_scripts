@@ -50,3 +50,9 @@ Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_
 ### Tools
 
 The [tools directory](./tools/) contains many scripts to perform various tasks that frequently come up in computational neuroimaging. Have a look and see what's available.
+
+## Detailed usage instructions
+
+These can be found in the scripts, just open them with a proper text editor like [Atom](https://atom.io/). 
+
+This does not mean that there are no good instructions. It's just that duplicating the docs on this website does not make any sense: it is very likely that I would forget updating the website when I change the scripts. I'm much more likely to adapt the instructions in the scripts when editing them.
