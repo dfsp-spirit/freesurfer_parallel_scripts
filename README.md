@@ -8,7 +8,9 @@ FreeSurfer is a state-of-the-art neuroimaging software suite, and its recon-all 
 
 ## Hardware requirements
 
-You will need a multi-core computer (almost all modern machines are multi-core, even laptops) that can run FreeSurfer and about 1.5 - 2 GB of free RAM per CPU core you want to use. An example would be a quad-core computer with 12 GB of RAM (4x2 GB for FreeSurfer, leaving another 4 for the operating system and all other processes). We run this on an AMD Threadripper Linux workstation with 48 cores, 128 GB of RAM and a fast SSD. I typically do not use all of the cores but leave 2 or 3 idle so that I can still use the computer for basic tasks while the pre-processing is running in the background.
+You will need a multi-core computer (almost all modern machines are multi-core, even laptops) that can run FreeSurfer and about 1.5 - 2 GB of free RAM per CPU core you want to use.
+
+An example would be a quad-core computer with 12 GB of RAM (4x2 GB for FreeSurfer, leaving another 4 for the operating system and all other processes). We run this on an AMD Threadripper Linux workstation with 48 cores, 128 GB of RAM and a fast SSD. I typically do not use all of the cores but leave 2 or 3 idle so that I can still use the computer for basic tasks while the pre-processing is running in the background.
 
 ## Software requirements
 
@@ -18,5 +20,20 @@ You will need a multi-core computer (almost all modern machines are multi-core, 
 
 ## The scripts
 
+
+### Running the FreeSurfer cross-sectional pipeline (1 time point per participant)
+
+This involves running the `recon-all` pipeline, which takes 12 - 20h per subject. Typically `qcache` is also run as part of the pipeline, to map the resulting data (like per-vertex cortical thickness in native space) to standard space (fsaverage).
+
+We recommend to first convert the raw DICOM files to NIFTI format using [dcm2nii](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage), and then use the script cross-sectional/recon-all-parallel.bash from this repository to run recon-all for all NIFTI files in parallel.
+
+See below if you will get data for a second wave later and intend to run a longitudinal analysis then.
+
+
+### Running the FreeSurfer longitudinal pipeline (several time points / scans per participant)
+
+This requires first running the cross-sectional `recon-all` pipeline for all time points you have. If a subject is named `subject1` and you have MRI scans from two time points, the NIFTI input files should be called `subject1_MR1.nii` and `subject1_MR2.nii` before you run the cross-sectional pipeline, so that you get two output directories named `subject1_MR1` and `subject1_MR2`.
+
+Then, you can run the longitudinal pipeline using the script 
 
 
