@@ -47,4 +47,6 @@ Then, you can run the longitudinal pipeline using the script [./longitudinal/fs_
 2) Mapping the data from the time points (directories `subject1_MR1` and `subject1_MR2`) to the template, creating directories `subject1_MR1.long.subject1` and `subject1_MR2.long.subject1`.
 3) Computing the change between the timepoints for one or several descriptors (cortical thickness, surface area, ...).
 
+### Tools
 
+The [tools directory](./tools/) contains many scripts to perform various tasks that frequently come up in computational neuroimaging. Have a look and see what's available.
