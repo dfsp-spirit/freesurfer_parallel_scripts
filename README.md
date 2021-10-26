@@ -4,7 +4,7 @@ Shell scripts to run FreeSurfer's recon-all in parallel on multi-core machines.
 
 ## About
 
-FreeSurfer is a state-of-the-art neuroimaging software suite, and its recon-all pipeline supports the fully automated reconstruction of mesh representations of the human cortex from raw MRI scans in DICOM or NIFTI formats. However, running recon-all takes very long (12 - 20 h per subject on current hardware) and typically needs to be run for hundreds of subjects for a neuroimaging study. This repo contains bash shell scripts which allow one to run the time-consuming FreeSurfer pre-processing in parallel on multi-core systems. The parallelization is done on the subject level, meaning that a single subject still takes a long time, but each core of your computer runs one subject.
+[FreeSurfer](https://freesurfer.net/) is a state-of-the-art neuroimaging software suite, and its recon-all pipeline supports the fully automated reconstruction of mesh representations of the human cortex from raw MRI scans in DICOM or NIFTI formats. However, running recon-all takes very long (12 - 20 h per subject on current hardware) and typically needs to be run for hundreds of subjects for a neuroimaging study. This repo contains bash shell scripts which allow one to run the time-consuming FreeSurfer pre-processing in parallel on multi-core systems. The parallelization is done on the subject level, meaning that a single subject still takes a long time, but each core of your computer runs one subject.
 
 ## Hardware requirements
 
@@ -15,7 +15,7 @@ An example would be a quad-core computer with 12 GB of RAM (4x2 GB for FreeSurfe
 ## Software requirements
 
 * Any Linux or MacOS operating system that can run FreeSurfer
-* A working FreeSurfer 6 or 7 installation (including proper setup for the bash shell)
+* A working [FreeSurfer](https://freesurfer.net/) 6 or 7 installation (including proper setup for the bash shell)
 * [GNU parallel](https://www.gnu.org/software/parallel/), which is used for parallelization in all of the scripts
 
 When you start the commands on a remote workstation, e.g., via SSH, we strongly recommend to also install a terminal multiplexer like [GNU screen](https://www.gnu.org/software/screen/) on the remote computer so that the computations, which will take several days for large samples, will not abort if the network connection from your computer to the workstation gets lost for a second or you accidentaly close the terminal app on your local computer. This is optional though.
