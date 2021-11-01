@@ -63,6 +63,7 @@ The [tools directory](./tools/) contains many scripts to perform various tasks t
 * [apply an atlas](./tools/apply_atlas_fs.bash) available as an fsaverage parcellation to a subject (in native space)
 * ...
 
+See [all scripts](./tools/). 
 
 ## Detailed usage instructions
 
