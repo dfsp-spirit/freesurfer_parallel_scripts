@@ -55,12 +55,12 @@ The first 2 steps use a subjects file, but part 3 requires a QDEC table in longi
 
 The [tools directory](./tools/) contains many scripts to perform various tasks that frequently come up in computational neuroimaging. Have a look and see what's available. It includes scripts to:
 
-* map data from native to standard space in parallel for many subjects
-* downsample meshes
+* [map data from native to standard space](./tools/map_to_fsaverage_parallel.bash) in parallel for many subjects
+* [downsample meshes](./tools/downsample_mesh_subject.bash) for individuals
 * compute local gyrification index (lGI) in parallel, both for [cross-sectional](./tools/parallel_lgi_native.bash) and [longitudinal](./tools/parallel_lgi_native_longitudinal.bash) data sets
 * [smooth per-vertex data in parallel](./tools/smooth_stddata_custom_parallel.bash)
 * [generate mid surface (between the white and pial surface) in parallel](./tools/parallel_gen_mid_surface.bash)
-* apply an atlas available as an fsaverage parcellation to a subject (in native space)
+* [apply an atlas](./tools/apply_atlas_fs.bash) available as an fsaverage parcellation to a subject (in native space)
 * ...
 
 
