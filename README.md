@@ -62,6 +62,7 @@ The [tools directory](./tools/) contains many scripts to perform various tasks t
 * [generate mid surfaces (between the white and pial surface) in parallel](./tools/parallel_gen_mid_surface.bash)
 * [apply an atlas](./tools/apply_atlas_fs.bash) available as an fsaverage parcellation to a subject (in native space)
 * [compute covariates / global brain measures](./tools/extract_total_brain_measures.bash) like the *total brain volume* for your subjects and save them to a CSV table
+* [copy only certain files from a FreeSurfer SUBJECTS_DIR to a new directory tree](./tools/deepcopy_brain_measures_only.bash) while keeping the directory layout
 * ...
 
 See [all scripts](./tools/). 
