@@ -8,6 +8,8 @@ Shell scripts to run FreeSurfer's recon-all in parallel on multi-core machines.
 
 However, running `recon-all` takes very long (12 - 20 h per subject on current hardware) and typically needs to be run for hundreds of subjects for a medium-sized neuroimaging study. This repo contains bash shell scripts which allow one to run the time-consuming FreeSurfer pre-processing **in parallel** on multi-core systems. The parallelization is done on the subject level, meaning that a single subject still takes a long time, but each core of your computer runs one subject.
 
+These scripts are mainly intended for running FreeSurfer on powerful workstation computers in a lab. They are **not** suitable for running FreeSurfer on high performance computing (HPC) clusters which use a job scheduler like Slurm.
+
 ![Vis](https://github.com/dfsp-spirit/freesurfer_parallel_scripts/blob/main/web/freesurfer_parallel_scripts.png?raw=true "freesurfer_parallel_scripts")
 
 ## Hardware requirements
