@@ -119,5 +119,3 @@ fi
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
 echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_PARALLEL_LGI_${DATE_TAG}.txt "$CARGO_SCRIPT {}"
-
-

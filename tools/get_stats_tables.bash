@@ -39,6 +39,7 @@ if [ ! -x "$python2_bin" ]; then
     exit 1
 fi
 
+export SUBJECTS_DIR="${subjects_dir}"
 
 #### run commands
 
@@ -48,8 +49,9 @@ num_subjects=$(echo "${subjects}" | wc -w | tr -d '[:space:]')
 echo "Getting stats for $num_subjects subjects."
 
 for hemi in lh rh; do
-    for measure in thickness area; do
+    for measure in thickness area volume; do # Feel free to add more measures here, see the help of aparcstats2table for options.
         aparc_output_table="${hemi}.aparc_table_${measure}.tsv"
+	# You many want to add more command line options to the call in the next line. E.g., '--skip' or '--common-parcs' may come in handy.
         $python2_bin $aparcstats2table_bin --subjectsfile $subjects_file --meas $measure --hemi $hemi -t $aparc_output_table && echo " * output file '$aparc_output_table' written."
     done
 
