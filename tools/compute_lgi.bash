@@ -14,7 +14,7 @@ else
 fi
 
 # Whether to run even if the output lgi files already exist. Set to 'YES' for yes, or anything else for no.
-FORCE="YES"
+FORCE="NO"
 
 #### check some basic stuff first
 
