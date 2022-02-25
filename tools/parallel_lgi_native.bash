@@ -59,10 +59,17 @@ if [ -n "$1" ]; then
     fi
 else
     echo "$APPTAG ERROR: Must specify subjects_file. Exiting."
-    echo "$APPTAG Usage: $0 <subjects_file> <job_arg1>..."
+    echo "$APPTAG Usage: $0 <subjects_file> [<num_cores>]"
+    echo "$APPTAG INFO: Note that computing lGI requires MATLAB on your PATH (try 'which matlab' to find out)."
     exit 1
 fi
 
+
+if [ -n "$2" ]; then
+    NUM_CONSECUTIVE_JOBS=$2
+fi
+
+echo "$APPTAG Running $NUM_CONSECUTIVE_JOBS is parallel."
 
 
 SUBJECTS=$(cat "${SUBJECTS_FILE}" | tr '\n' ' ')
