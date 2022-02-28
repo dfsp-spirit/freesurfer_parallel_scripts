@@ -61,6 +61,7 @@ else
     echo "$APPTAG ERROR: Must specify subjects_file. Exiting."
     echo "$APPTAG Usage: $0 <subjects_file> [<num_cores>]"
     echo "$APPTAG INFO: Note that computing lGI requires MATLAB on your PATH (try 'which matlab' to find out)."
+    echo "$APPTAG Note that Matlab is required with a valid licence. Start it once manually to check the license."
     exit 1
 fi
 

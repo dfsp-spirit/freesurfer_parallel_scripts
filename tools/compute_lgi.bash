@@ -8,6 +8,7 @@ if [ -z "$1" ]; then
   echo "$APPTAG ERROR: Arguments missing."
   echo "$APPTAG Usage: $0 <subject>"
   echo "$APPTAG Note that the environment variable SUBJECTS_DIR must also be set correctly."
+  echo "$APPTAG Note that Matlab is required for this command, with valid licence. Start it once manually to check the license."
   exit 1
 else
   SUBJECT="$1"
@@ -37,6 +38,7 @@ fi
 if [ -z "${MATLABPATH}" ]; then
     echo "$APPTAG WARNING: Environment variable MATLABPATH not set. Set it to your Matlab installation directory."
     echo "$APPTAG: (cont.) Example for BASH: 'export MATLABPATH=/Applications/MATLAB_R2019a.app/'"
+    echo "$APPTAG: You can ignore this warning if MATLABPATH/bin is on your PATH (i.e., if 'which matlab' returns a valid path)."
 fi
 
 MATLAB_BINARY=$(which matlab)

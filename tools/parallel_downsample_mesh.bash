@@ -30,7 +30,7 @@ APPTAG="[PAR_DOWN_MESH]"
 
 # Number of consecutive GNU Parallel jobs. Note that 0 for 'as many as possible'. Maybe set something a little bit less than the number of cores of your machine if you want to do something else while it runs.
 # See 'man parallel' for details. On MacOS, try `sysctl -n hw.ncpu` to find the number of cores you have.
-NUM_CONSECUTIVE_JOBS=22
+NUM_CONSECUTIVE_JOBS=44
 ###### End of job settings #####
 
 
