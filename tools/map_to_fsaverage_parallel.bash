@@ -10,6 +10,8 @@
 #
 # Written by TS
 
+## For more details on the <rename_only> argument, see the map_to_fsaverage_single_subject.bash script.
+
 APPTAG="[MAP_PAR]"
 
 ##### General settings #####
@@ -59,12 +61,26 @@ if [ -n "$1" ]; then
     fi
 else
     echo "$APPTAG ERROR: Must specify subjects_file. Exiting. (This is a text file with 1 subject per line.)"
-    echo "$APPTAG Usage: $0 <subjects_file> <measure> [<num_proc>] [<template_subject>]"
+    echo "$APPTAG Usage: $0 <subjects_file> <measure> [[[[<num_proc>] <template_subject>] <force>] <rename_only>]"
     echo "$APPTAG    <subjects_file> : path to a textfile containing one subject per line"
     echo "$APPTAG    <measure>       : the measure to map to fsaverage, e.g., 'thickness', 'curv', or 'truncation'."
     echo "$APPTAG    <num_proc>      : number of processes (subjects) to run in parallel. Set to 0 for max for your machine."
-    echo "$APPTAG   <template_subject> : Optional, the template subject to map data to. Defaults to fsaverage."
+    echo "$APPTAG    <template_subject> : Optional, the template subject to map data to. Defaults to fsaverage."
+    echo "$APPTAG    <force> 'YES' or 'NO', whether to re-map the data even if the ouput files already exist. Defaults to 'NO'."
+    echo "$APPTAG    <rename_only> 'YES' or 'NO', whether to rename the files only and convert to MGH. See script for details. Defaults to 'NO'."
+    echo "$APPTAG * Note that the environment variable SUBJECTS_DIR must also be set correctly."
+    echo "$APPTAG   The SUBJECTS_DIR is set to: '$SUBJECTS_DIR'."
     exit 1
+fi
+
+FORCE="NO"
+if [ -n "$5" ]; then
+    FORCE="$5"
+fi
+
+RENAME_ONLY="NO"
+if [ -n "$6" ]; then
+    RENAME_ONLY="$6"
 fi
 
 
@@ -99,14 +115,16 @@ done
 ## Feel free to use shell syntax to do stuff in the command.
 ## Here, we use another argument from the command line of this script:
 if [ -z "$2" ]; then
-  echo "$APPTAG ERROR: Job-specific arguments missing. Required: <measure> [<num_proc>] [<template_subject>]"
-  echo "$APPTAG Usage: $0 <subjects_file> <measure>"
-  echo "$APPTAG Details on arguments:"
-  echo "$APPTAG   <subjects_file> : text file containing one subject id per line"
-  echo "$APPTAG   <measure> : some FreeSurfer surface measure, e.g., 'area', 'curv', or 'area.pial'."
-  echo "$APPTAG   <num_proc> : number of threads to run in parallel"
-  echo "$APPTAG   <template_subject> : Optional, the template subject to map data to. Defaults to fsaverage."
-  echo "$APPTAG Keep in mind that SUBJECTS_DIR must be set properly."
+  echo "$APPTAG ERROR: Must specify subjects_file. Exiting. (This is a text file with 1 subject per line.)"
+  echo "$APPTAG Usage: $0 <subjects_file> <measure> [[[[<num_proc>] <template_subject>] <force>] <rename_only>]"
+  echo "$APPTAG    <subjects_file> : path to a textfile containing one subject per line"
+  echo "$APPTAG    <measure>       : the measure to map to fsaverage, e.g., 'thickness', 'curv', or 'truncation'."
+  echo "$APPTAG    <num_proc>      : number of processes (subjects) to run in parallel. Set to 0 for max for your machine."
+  echo "$APPTAG    <template_subject> : Optional, the template subject to map data to. Defaults to fsaverage."
+  echo "$APPTAG    <force> 'YES' or 'NO', whether to re-map the data even if the ouput files already exist. Defaults to 'NO'."
+  echo "$APPTAG    <rename_only> 'YES' or 'NO', whether to rename the files only and convert to MGH. See script for details. Defaults to 'NO'."
+  echo "$APPTAG * Note that the environment variable SUBJECTS_DIR must also be set correctly."
+  echo "$APPTAG   The SUBJECTS_DIR is set to: '$SUBJECTS_DIR'."
   exit 1
 else
   MEASURE="$2"
@@ -117,6 +135,10 @@ if [ -n "$4" ]; then
     TEMPLATE_SUBJECT="$4"
 fi
 echo "$APPTAG Using template subject '${TEMPLATE_SUBJECT}'."
+if [ ! -d "${SUBJECTS_DIR}/${TEMPLATE_SUBJECT}" ]; then
+  echo "$APPTAG ERROR: Directory for template subject '${TEMPLATE_SUBJECT}' not found in SUBJECTS_DIR '${SUBJECTS_DIR}'. Exiting."
+  exit 1
+fi
 
 EXEC_PATH_OF_THIS_SCRIPT=$(dirname $0)
 CARGO_SCRIPT="${EXEC_PATH_OF_THIS_SCRIPT}/map_to_fsaverage_single_subject.bash"
@@ -126,6 +148,8 @@ if [ ! -x "${CARGO_SCRIPT}" ]; then
     exit
 fi
 
+echo "$APPTAG Mapping measure $MEASURE to $TEMPLATE_SUBJECT for $SUBJECT_COUNT subjects in dir $SUBJECTS_DIR using NUM_CONSECUTIVE_JOBS $cores."
+
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_MAP_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $MEASURE $TEMPLATE_SUBJECT"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_MAP_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $MEASURE $TEMPLATE_SUBJECT $FORCE $RENAME_ONLY"
