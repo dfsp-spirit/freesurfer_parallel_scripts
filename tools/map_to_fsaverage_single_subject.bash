@@ -43,11 +43,13 @@ DO_RUN="YES" # Ignore this, leave at "YES". It is for development/testing only.
 # Set the next value to YES only if the per-vertex data you want to map has been computed on a down-sampled native space mesh that is
 # equivalent to the target template you are using (e.g., you downsampled native space meshes to fsaverage6-equivalent vertex count, computed
 # some descriptor on them, and do now only want to smooth those data).
-# In that case, the curv files containing the data will simply be renamed (and the format converted to MGH) to the expected filename.
-# If you did a more standard analysis and simply want to map native space data to a template like fsaverage or fsaverage6, the setting needs to be "NO".
+# In that case, the curv files containing the data will simply be smoothed and renamed (and the format converted to MGH) to the expected filename.
+# If you did a more standard analysis and simply want to map native space data to a template like fsaverage or
+# fsaverage6 (where the vertex counts of the native space brain and the template differ), the setting needs to be "NO".
 #
 # If in doubt,set this to "NO". An example where this is typically set to "YES" would be geodesic distances, which are often computed on
-# downsampled meshes as they take too long on full resolution meshes. In that case, TEMPLATE_SUBJECT would be "fsaverage6" instead of the default "fsaverage".
+# downsampled meshes (with vertex count identical to fsaverage6!) as they take too long on full resolution meshes. In that
+# case, TEMPLATE_SUBJECT would be "fsaverage6" instead of the default "fsaverage".
 SOURCE_PER_VERTEX_DATA_IS_ALREADY_IN_TARGET_TEMPLATE_SPACE="NO"
 if [ -n "$5" ]; then
     SOURCE_PER_VERTEX_DATA_IS_ALREADY_IN_TARGET_TEMPLATE_SPACE="$5"
