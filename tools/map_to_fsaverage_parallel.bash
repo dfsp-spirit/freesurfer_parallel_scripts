@@ -148,7 +148,7 @@ if [ ! -x "${CARGO_SCRIPT}" ]; then
     exit
 fi
 
-echo "$APPTAG Mapping measure $MEASURE to $TEMPLATE_SUBJECT for $SUBJECT_COUNT subjects in dir $SUBJECTS_DIR using NUM_CONSECUTIVE_JOBS $cores."
+echo "$APPTAG Mapping measure $MEASURE to $TEMPLATE_SUBJECT for $SUBJECT_COUNT subjects in dir $SUBJECTS_DIR using $NUM_CONSECUTIVE_JOBS $cores."
 
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
