@@ -6,9 +6,15 @@ APPTAG="[MAP_SINGLE]"
 
 if [ -z "$2" ]; then
   echo "$APPTAG ERROR: Arguments missing."
-  echo "$APPTAG Usage: $0 <subject> <measure> [<template_subject>]"
-  echo "$APPTAG Note that the environment variable SUBJECTS_DIR must also be set correctly."
-  echo "$APPTAG If you omit <template_subject>, we assume fsaverage."
+  echo "$APPTAG Usage: $0 <subject> <measure> [[[<template_subject>] <force>] <rename_only>]"
+  echo "$APPTAG * Note that the environment variable SUBJECTS_DIR must also be set correctly."
+  echo "$APPTAG   The SUBJECTS_DIR is set to: '$SUBJECTS_DIR'."
+  echo "$APPTAG Arguments:"
+  echo "$APPTAG  <subject> the subject you want to map. its recon-all output dir must exist in SUBJECTS_DIR."
+  echo "$APPTAG  <measure> the native space descriptor you want to map. Typically something like 'thickness', 'pial_lgi', 'area'."
+  echo "$APPTAG  <template_subject> the template subject to use. Defaults to 'fsaverage'."
+  echo "$APPTAG  <force> 'YES' or 'NO', whether to re-map the data even if the ouput files already exist. Defaults to 'NO'."
+  echo "$APPTAG  <rename_only> 'YES' or 'NO', whether to rename the files only and convert to MGH. See script for details. Defaults to 'NO'."
   exit 1
 else
   SUBJECT="$1"
@@ -16,19 +22,24 @@ else
 fi
 
 TEMPLATE_SUBJECT="fsaverage"
-if [ -n "$3" ]; then
-    TEMPLATE_SUBJECT="$3"
-fi
 
+if [ -n "$3" ]; then
+  TEMPLATE_SUBJECT="$3"
+fi
 
 #### Settings ####
 
 # Whether to run even if the output files already exist. Set to 'YES' for yes, or anything else for no.
+# Setting this to NO will save you *a lot* of time if parts of your subjects are already done.
 FORCE="NO"
+if [ -n "$4" ]; then
+    FORCE="$4"
+fi
 
 # Whether to really run the mapping. Set to NO for a dry-run that prints what it would do.
-DO_RUN="YES"
+DO_RUN="YES" # Ignore this, leave at "YES". It is for development/testing only.
 
+### Read this section to understand the parameter 'rename_only'. ###
 # Set the next value to YES only if the per-vertex data you want to map has been computed on a down-sampled native space mesh that is
 # equivalent to the target template you are using (e.g., you downsampled native space meshes to fsaverage6-equivalent vertex count, computed
 # some descriptor on them, and do now only want to smooth those data).
@@ -38,6 +49,9 @@ DO_RUN="YES"
 # If in doubt,set this to "NO". An example where this is typically set to "YES" would be geodesic distances, which are often computed on
 # downsampled meshes as they take too long on full resolution meshes. In that case, TEMPLATE_SUBJECT would be "fsaverage6" instead of the default "fsaverage".
 SOURCE_PER_VERTEX_DATA_IS_ALREADY_IN_TARGET_TEMPLATE_SPACE="NO"
+if [ -n "$5" ]; then
+    SOURCE_PER_VERTEX_DATA_IS_ALREADY_IN_TARGET_TEMPLATE_SPACE="$5"
+fi
 
 #### check some basic stuff first
 
