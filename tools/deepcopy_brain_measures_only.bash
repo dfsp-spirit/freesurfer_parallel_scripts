@@ -150,7 +150,7 @@ NUM_SUBJECTS_HANDLED=$(echo "$NUM_SUBJECTS - $NUM_SUBJECTS_IGNORED" | bc)
 NUM_COPIES_EXPECTED=$(echo "$NUM_SUBJECTS_HANDLED * ${FILE_COUNT_PER_SUBJECT}" | bc)
 
 if [ "$IS_FROM_SUBJECTS_LIST" = "TRUE" ]; then
-    echo "Used $NUM_SUBJECTS_INFILE subjects from file '$SUBJECTS_FILE', detected $NUM_SUBJECTS subject dirs (difference in missing!). Ignored $NUM_SUBJECTS_IGNORED of them. Successfully copied $NUM_FILES_COPIED of $NUM_COPIES_EXPECTED expected files."
+    echo "Used $NUM_SUBJECTS_INFILE subjects from file '$SUBJECTS_FILE', detected $NUM_SUBJECTS subject dirs (difference is missing!). Ignored $NUM_SUBJECTS_IGNORED of them. Successfully copied $NUM_FILES_COPIED of $NUM_COPIES_EXPECTED expected files."
 else
     echo "Checked $NUM_FILES_OR_FOLDERS dir entries, detected $NUM_SUBJECTS subject dirs, ignored $NUM_SUBJECTS_IGNORED of them. Successfully copied $NUM_FILES_COPIED of $NUM_COPIES_EXPECTED expected files."
 fi
