@@ -1,9 +1,9 @@
 #!/bin/bash
-## reproc_single_subject_after_edits.bash -- preprocess a single subject in FreeSurfer
+## reprocess_after_manual_edits_single_subject.bash -- reprocess a single subject in FreeSurfer after edits
 ##
-## There should be no need to run this script. It is called by the parallel wrapper script, preproc_reconall_parallel.bash. Run that one instead.
+## There should be no need to run this script. It is called by the parallel wrapper script instead.
 ##
-## Usage: preproc_single_subject.bash <subject_id>
+## Usage: reprocess_after_manual_edits_single_subject.bash <subject_id>, where the ID must end with '_gm' or '_wm'
 
 APPTAG="[reproc_after_edits_single_subject]"
 SUBJECT_ID="$1"
