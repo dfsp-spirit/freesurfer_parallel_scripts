@@ -39,7 +39,7 @@ This involves running the `recon-all` pipeline, which takes 12 - 20h per subject
 We recommend the following steps:
 
 * First convert the raw DICOM files to NIFTI format using [dcm2nii](https://www.nitrc.org/plugins/mwiki/index.php/dcm2nii:MainPage).
-  - Note: If you have `.nii.gz` files, make sure to extract them to get `.nii` files.
+  - Note: If you have `.nii.gz` files, make sure to extract them to get `.nii` files. E.g., in bash: `for nf in *.nii.gz; do gunzip "$nf"; done`
   - Note: You may have more than one structural scan per subject at this time (e.g., if the first one was aborted or looked bad during scanning). That is fine, you have to pre-process both with FreeSurfer first to decide which one to use later.
 * Use the script [cross-sectional/preproc_reconall_parallel.bash](./cross-sectional/preproc_reconall_parallel.bash) from this repository to run recon-all for all NIFTI files in parallel.
   - Note: If you have TSE (or t2-weighted) files in addition to t1-weighted files, please adapt the [cross-sectional/preproc_reconall_single_subject.bash](https://github.com/dfsp-spirit/freesurfer_parallel_scripts/blob/main/cross-sectional/preproc_reconall_single_subject.bash) script to make sure they are used during pre-processing.
