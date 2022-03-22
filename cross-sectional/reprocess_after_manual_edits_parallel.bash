@@ -39,7 +39,7 @@ echo "$APPTAG Running recon-all reprocessing after edits in parallel for ${NUM_S
 
 SUBJECTS=$(cat ${SUBJECTS_FILE} | tr '\n' ' ')
 for SUBJECT_ID in $SUBJECTS; do
-    if [ -d "${SUBJECTS_DIR}"/"${SUBJECT_ID}" ]; then
+    if [ ! -d "${SUBJECTS_DIR}"/"${SUBJECT_ID}" ]; then
         echo "Missing data dir for subject '$SUBJECT_ID' under SUBJECTS_DIR '$SUBJECTS_DIR'. Exiting."
         exit 1
     fi
