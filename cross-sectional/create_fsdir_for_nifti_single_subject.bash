@@ -24,7 +24,9 @@ fi
 
 echo "$APPTAG Using the current dir as working dir."
 
-recon-all -sd `pwd` -i ${subject} -s ${subject_nii_file}"
+recon-all -sd `pwd` -i ${subject_nii_file} -s ${subject}
+
+
 
 
 
