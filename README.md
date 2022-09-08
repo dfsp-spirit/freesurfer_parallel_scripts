@@ -78,6 +78,6 @@ See [all scripts](./tools/).
 
 ## Detailed usage instructions
 
-These can be found in the scripts, just open them with a proper text editor like [Atom](https://atom.io/). 
+These can be found in the scripts, just open them with a proper text editor like [Atom](https://atom.io/) or [vscode](https://code.visualstudio.com/). 
 
 This does not mean that there are no good instructions. It's just that duplicating the docs on this website does not make any sense: it is very likely that I would forget updating the website when I change the scripts. I'm much more likely to adapt the instructions in the scripts when editing them.
