@@ -6,7 +6,7 @@ Shell scripts to run FreeSurfer's recon-all in parallel on multi-core machines.
 
 [FreeSurfer](https://freesurfer.net/) is a state-of-the-art neuroimaging software suite, and its `recon-all` pipeline supports the fully automated reconstruction of mesh representations of the human cortex from raw MRI scans. 
 
-However, running `recon-all` takes very long (12 - 20 h per subject on current hardware) and typically needs to be run for hundreds of subjects for a medium-sized neuroimaging study. This repo contains bash shell scripts which allow one to run the time-consuming FreeSurfer pre-processing **in parallel** on multi-core systems. The parallelization is done on the subject level, meaning that a single subject still takes a long time, but each core of your computer runs one subject.
+However, running `recon-all` takes very long (12 - 20 h per subject on current hardware) and typically needs to be run for hundreds of subjects for a medium-sized neuroimaging study. This repo contains bash shell scripts which allow one to run the time-consuming FreeSurfer pre-processing **in parallel** on multi-core systems. The parallelization is done on the subject level, meaning that a single subject still takes a long time, but each core of your computer runs one subject. The main tool behind this is the [GNU parallel](https://www.gnu.org/software/parallel/) software.
 
 These scripts are mainly intended for running FreeSurfer on powerful workstation computers in a lab. They are **not** suitable for running FreeSurfer on high performance computing (HPC) clusters which use a job scheduler like Slurm.
 
