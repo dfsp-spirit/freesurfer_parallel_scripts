@@ -1,7 +1,27 @@
 #!/bin/bash
+#
+# Get aparc stats with FreeSurfer 6.
+#
+# Note that for FS7, aparcstats is a shell script and must thus not be run with Python anymore,
+# it is a wrapper that calls its own Python interpreter in the FREESURFER_HOME.
 
 ### Settings ###
-python2_bin=$(which python2)
+
+#TODO: auto-detect FS6 vs FS7.
+is_fs7="yes"
+
+### End of settings ###
+
+apptag="[GET_STATS_TBL]"
+
+if [ "$is_fs7" != "yes" ]; then
+  echo "$apptag Assuming FreeSurfer v7. Please adapt setting 'is_fs7' if you are using FreeSurfer 6.x or below or this will fail."
+else
+    echo "$apptag Assuming FreeSurfer v6.x or below. Please adapt setting 'is_fs7' if you are using FreeSurfer 7.x. or this will fail."
+fi
+
+### Settings ###
+python2_bin=$(which python2) # Only needed for FS6.
 #python2_bin=/usr/local/bin/python2
 
 ###
@@ -29,14 +49,17 @@ if [ ! -f $subjects_file ];  then
     exit 1
 fi
 
-if [ -z "$python2_bin" ]; then
-    echo "ERROR: Could not autodetect path to python2 binary, please adapt setting 'python2_bin' in this script."
-    exit 1
-fi
+if [ "$is_fs7" != "yes" ]; then
 
-if [ ! -x "$python2_bin" ]; then
-    echo "ERROR: Cannot execute python2 binary at '$python2_bin'"
-    exit 1
+    if [ -z "$python2_bin" ]; then
+        echo "ERROR: Could not autodetect path to python2 binary, please adapt setting 'python2_bin' in this script."
+        exit 1
+    fi
+
+    if [ ! -x "$python2_bin" ]; then
+        echo "ERROR: Cannot execute python2 binary at '$python2_bin'"
+        exit 1
+    fi
 fi
 
 export SUBJECTS_DIR="${subjects_dir}"
@@ -52,11 +75,20 @@ for hemi in lh rh; do
     for measure in thickness area volume; do # Feel free to add more measures here, see the help of aparcstats2table for options.
         aparc_output_table="${hemi}.aparc_table_${measure}.tsv"
 	# You many want to add more command line options to the call in the next line. E.g., '--skip' or '--common-parcs' may come in handy.
-        $python2_bin $aparcstats2table_bin --subjectsfile $subjects_file --meas $measure --hemi $hemi -t $aparc_output_table && echo " * output file '$aparc_output_table' written."
+        if [ "$is_fs7" = "yes" ]; then
+            $aparcstats2table_bin --subjectsfile $subjects_file --meas $measure --hemi $hemi -t $aparc_output_table && echo " * output file '$aparc_output_table' written."
+        else
+            $python2_bin $aparcstats2table_bin --subjectsfile $subjects_file --meas $measure --hemi $hemi -t $aparc_output_table && echo " * output file '$aparc_output_table' written."
+        fi
     done
 
     aseg_output_table="aseg_table.tsv"
-    $python2_bin $asegstats2table_bin --subjectsfile $subjects_file -t $aseg_output_table && echo " * output file '$aseg_output_table' written."
+    if [ "$is_fs7" = "yes" ]; then
+        $asegstats2table_bin --subjectsfile $subjects_file -t $aseg_output_table && echo " * output file '$aseg_output_table' written."
+    else
+        $python2_bin $asegstats2table_bin --subjectsfile $subjects_file -t $aseg_output_table && echo " * output file '$aseg_output_table' written."
+    fi
+
 done
 
 echo "All done, exiting."
