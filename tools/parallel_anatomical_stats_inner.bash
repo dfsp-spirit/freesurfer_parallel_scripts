@@ -26,6 +26,9 @@ if [ ! -d "${SUBJECTS_DIR}/${SUBJECT}" ]; then
     exit 1
 fi
 
+
+### Settings ###
+
 MEASURES="thickness area volume"
 HEMIS="lh rh"
 ATLAS="aparc.a2009s"
@@ -33,6 +36,11 @@ ATLAS="aparc.a2009s"
 do_exit_on_missing_input="no" # only for missing input files. set to "yes" or "no".
 do_exit_on_write_error="no" # only for write errors. we still exit if input files are missing. set to "yes" or "no".
 skip_for_existing_files="yes" # set to "yes" or "no". whether to skip computation if the output file already exists.
+
+### End Of Settings ####
+
+
+
 
 for HEMI in $HEMIS; do
     for MEASURE in ${MEASURES}; do

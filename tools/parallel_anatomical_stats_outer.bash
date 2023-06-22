@@ -9,13 +9,20 @@
 # Written by Tim, 2023-06-22
 #
 
+
 APPTAG="[PAR_ANAT_STATS]"
 
 ##### General settings #####
 
 # Number of consecutive GNU Parallel jobs. Note that 0 for 'as many as possible'. Maybe set something a little bit less than the number of cores of your machine if you want to do something else while it runs.
-# See 'man parallel' for details. On MacOS, try `sysctl -n hw.ncpu` to find the number of cores you have.
-NUM_CONSECUTIVE_JOBS=7
+# See 'man parallel' for details. On MacOS, try `sysctl -n hw.ncpu` to find the number of cores you have. On Linux, use 'nproc'.
+
+NUM_CONSECUTIVE_JOBS=8
+
+#############################################################################################################################
+## IMPORTANT: Make sure the correct atlas, hemi and measure is configured in the 'parallel_anatomical_stats_inner.bash' file.
+#############################################################################################################################
+
 ###### End of job settings #####
 
 
