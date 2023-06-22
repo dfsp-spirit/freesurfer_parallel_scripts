@@ -21,12 +21,10 @@ if [ -z "$SUBJECTS_DIR" ]; then
     exit 1
 fi
 
-SUBJECTS_FILE="${SUBJECTS_DIR}/subjects.txt"
-
-echo "$APPTAG Using subjects file from '${SUBJECTS_FILE}'"
-
-ALL_SUBJECT_IDS=$(cat "${SUBJECTS_FILE}" | tr '\n' ' ')
-SUBJECT_COUNT=$(echo "$ALL_SUBJECT_IDS" | wc -w | tr -d '[:space:]')
+if [ ! -d "${SUBJECTS_DIR}/${SUBJECT}" ]; then
+    echo "$APPTAG ERROR: Directory for subject '${SUBJECT}' not found in SUBJECTS_DIR '${SUBJECTS_DIR}'. Exiting."
+    exit 1
+fi
 
 MEASURES="thickness area volume"
 HEMIS="lh rh"
@@ -34,10 +32,16 @@ ATLAS="aparc.a2009s"
 
 do_exit_on_missing_input="no" # only for missing input files. set to "yes" or "no".
 do_exit_on_write_error="no" # only for write errors. we still exit if input files are missing. set to "yes" or "no".
+skip_for_existing_files="yes" # set to "yes" or "no". whether to skip computation if the output file already exists.
 
 for HEMI in $HEMIS; do
     for MEASURE in ${MEASURES}; do
         OUTPUT_FILE="${SUBJECTS_DIR}/${SUBJECT}/stats/${HEMI}.${ATLAS}.${MEASURE}.stats"
+
+        if [ "${skip_for_existing_files}" = "yes" -a -f "${OUTPUT_FILE}" ]; then
+            echo "$APPTAG Skipping subject $SUBJECT hemi $HEMI measure $MEASURE atlas $ATLAS because output file '${OUTPUT_FILE}' already exists."
+            continue
+        fi
 
         # Check for input files, as mris_anatomical_stats still does (useless) stuff if they are missing
         INPUT_FILE_ATLAS="${SUBJECTS_DIR}/${SUBJECT}/label/${HEMI}.${ATLAS}.annot"
