@@ -7,18 +7,29 @@
 
 ### Settings ###
 
-#TODO: auto-detect FS6 vs FS7.
-is_fs7="yes"
+# auto-detect FS6 vs FS7.
+if [ -z "$FREESURFER_HOME" ]; then
+    echo "ERROR: Environment variable FREESURFER_HOME not set, you must export it and point it to your FreeSurfer installation."
+    exit 1
+fi
+grep_res = $(fgrep 'x86_64-stable-pub-v6.' $FREESURFER_HOME/build-stamp.txt)
+if [ -n "${grep_res}" ]; then
+    is_fs7="no"
+else
+    is_fs7="yes"
+fi
 
 ### End of settings ###
 
 apptag="[GET_STATS_TBL]"
 
-if [ "$is_fs7" != "yes" ]; then
-  echo "$apptag Assuming FreeSurfer v7. Please adapt setting 'is_fs7' if you are using FreeSurfer 6.x or below or this will fail."
+if [ "$is_fs7" = "yes" ]; then
+  echo "$apptag Assuming FreeSurfer v7 from auto-detection. Please overwrite setting 'is_fs7' manually if this is incorrect. If you are using FreeSurfer 6.x or below, this script will fail later."
 else
-    echo "$apptag Assuming FreeSurfer v6.x or below. Please adapt setting 'is_fs7' if you are using FreeSurfer 7.x. or this will fail."
+    echo "$apptag Assuming FreeSurfer v6.x or below from auto-detection. Please overwrite setting 'is_fs7' manually if this is incorrect. If you are using FreeSurfer 7.x., this script will fail later."
 fi
+
+#is_fs7="no" # uncomment this line to force FS6 mode.
 
 ### Settings ###
 python2_bin=$(which python2) # Only needed for FS6.
