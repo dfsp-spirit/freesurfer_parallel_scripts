@@ -1,8 +1,9 @@
 #!/bin/bash
 # Compute anatomical stats for a custom measure and join them for all subjects into a table.
+# This script runs sequentially.
 # Written by Tim, 2019-08-27
 
-APPTAG="[RUN_ANAT_STATS]"
+APPTAG="[RUN_ANAT_STATS_SEQ]"
 
 if [ -z "$SUBJECTS_DIR" ]; then
     echo "$APPTAG ERROR: Environment variable SUBJECTS_DIR not set, you must export it."
@@ -16,9 +17,11 @@ echo "$APPTAG Using subjects file from '${SUBJECTS_FILE}'"
 ALL_SUBJECT_IDS=$(cat "${SUBJECTS_FILE}" | tr '\n' ' ')
 SUBJECT_COUNT=$(echo "$ALL_SUBJECT_IDS" | wc -w | tr -d '[:space:]')
 
-MEASURE="pial_lgi"
+MEASURE="thickness"
 HEMIS="lh rh"
-ATLAS="aparc"
+ATLAS="aparc.a2009s"
+
+do_run_aparcstats2table="yes"
 
 for HEMI in $HEMIS; do
     for SUBJECT in ${ALL_SUBJECT_IDS}; do
@@ -51,18 +54,23 @@ for HEMI in $HEMIS; do
         fi
     done
 
-    echo "$APPTAG Running aparcstats2table for all subjects, hemi '${HEMI}'."
-    OUTPUT_TABLE_FILE="${ATLAS}.${MEASURE}_${HEMI}.txt"
-    aparcstats2table --subjectsfile=${SUBJECTS_FILE} --hemi ${HEMI} --meas thickness --parc ${ATLAS}.${MEASURE} --tablefile ${OUTPUT_TABLE_FILE}
-    if [ $? -eq 1 ]; then
-        echo "$APPTAG Call to aparcstats2table failed (see above). Exiting."
-        exit 1
+    if [ "${do_run_aparcstats2table}" = "yes" ]; then
+
+        echo "$APPTAG Running aparcstats2table for all subjects, hemi '${HEMI}'."
+        OUTPUT_TABLE_FILE="${ATLAS}.${MEASURE}_${HEMI}.txt"
+        aparcstats2table --subjectsfile=${SUBJECTS_FILE} --hemi ${HEMI} --meas thickness --parc ${ATLAS}.${MEASURE} --tablefile ${OUTPUT_TABLE_FILE}
+        if [ $? -eq 1 ]; then
+            echo "$APPTAG Call to aparcstats2table failed (see above). Exiting."
+            exit 1
+        fi
+        if [ ! -f "${OUTPUT_TABLE_FILE}" ]; then
+            echo "$APPTAG ERROR: Expected output table file '${OUTPUT_TABLE_FILE}' missing. Check output above for errors."
+            exit 1
+        fi
+        echo "$APPTAG aparcstats2table completed, check output file '${OUTPUT_TABLE_FILE}'."
+        echo "$APPTAG IMPORTANT: The statistics are stored in the 'thickness' column in the per-subject output files (there is no column for custom measures), but they are still for your measure '${MEASURE}'."
+    else
+        echo "$APPTAG Skipping aparcstats2table for hemi '${HEMI}'."
     fi
-    if [ ! -f "${OUTPUT_TABLE_FILE}" ]; then
-        echo "$APPTAG ERROR: Expected output table file '${OUTPUT_TABLE_FILE}' missing. Check output above for errors."
-        exit 1
-    fi
-    echo "$APPTAG aparcstats2table completed, check output file '${OUTPUT_TABLE_FILE}'."
-    echo "$APPTAG IMPORTANT: The statistics are stored in the 'thickness' column in the per-subject output files (there is no column for custom measures), but they are still for your measure '${MEASURE}'."
 
 done
