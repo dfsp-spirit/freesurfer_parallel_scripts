@@ -1,12 +1,31 @@
 #!/bin/bash
 # downsample a label, e.g., downsample lh.cortex.label (ico7) to lh.cortex6.label (ico6) for a subject.
 # The downsampled label can be used to find the cortical vertices (as opposed to the medial wall) for a subject on its ico6 surface.
+#
 # Usage: bash downsample_label.bash
+#
+# IMPORTANT: Run this in your recon-all output dir, the SUBJECTS_DIR.
 
 APPTAG="[DS_LABEL]"
-SUBJECT="subject1"
+SUBJECT=$1
 LABEL="cortex"
 ICO_ORDER=6
+
+if [ -z "$SUBJECT" ]; then
+    echo "${APPTAG} ERROR: No subject specified. Usage: bash downsample_label.bash <subject> [<label> [<ico_order>]]"
+    echo "${APPTAG} ERROR: Example: bash downsample_label.bash bert cortex 6"
+    exit 1
+fi
+
+if [ -n "$2" ]; then
+    LABEL=$2
+fi
+
+if [ -n "$3" ]; then
+    ICO_ORDER=$3
+fi
+
+
 
 export SUBJECTS_DIR=$(pwd)
 
