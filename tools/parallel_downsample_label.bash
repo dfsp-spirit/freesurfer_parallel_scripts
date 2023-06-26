@@ -47,6 +47,7 @@ else
     echo "$APPTAG <ico_order>      : int, target hemisphere ICO order (mesh resolution). Must be 6, 5, 4, or 3. Default: 6.)"
     echo "$APPTAG Example: $0 subjects.txt"
     exit 1
+fi
 
 
 if [ -n "$2" ]; then
