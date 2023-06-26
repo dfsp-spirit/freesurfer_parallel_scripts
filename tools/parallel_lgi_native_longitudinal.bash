@@ -1,5 +1,5 @@
 #!/bin/bash
-# parallel_lgi_native_longitudinal.bash -- compute LGI in parallel over a number of longitudinal subjects. 
+# parallel_lgi_native_longitudinal.bash -- compute LGI in parallel over a number of longitudinal subjects.
 # This computes the lgi on the native surface of the subject, it does NOT map the results to fsaverage. Use the subpar script for that.
 #
 ######################### IMPORTANT #############################
@@ -33,7 +33,17 @@ APPTAG="[PAR_LGI_LONG]"
 
 # Number of consecutive GNU Parallel jobs. Note that 0 for 'as many as possible'. Maybe set something a little bit less than the number of cores of your machine if you want to do something else while it runs.
 # See 'man parallel' for details. On MacOS, try `sysctl -n hw.ncpu` to find the number of cores you have.
-NUM_CONSECUTIVE_JOBS=44
+OS="$(uname -s)"
+if [ "$OS" = "Linux" ]; then
+    NUM_PARALLEL_JOBS="$(nproc --all)"
+elif [ "$OS" = "Darwin" ] || \
+        [ "$(echo "$OS" | grep -q BSD)" = "BSD" ]; then
+    NUM_PARALLEL_JOBS="$(sysctl -n hw.ncpu)"
+else
+    NUM_PARALLEL_JOBS="$(getconf _NPROCESSORS_ONLN)"  # glibc/coreutils fallback
+fi
+# feel free to override manually here:
+# NUM_PARALLEL_JOBS=8
 ###### End of job settings #####
 
 
@@ -70,12 +80,12 @@ fi
 SUBJECTS=$(cat "${SUBJECTS_FILE}" | tr '\n' ' ')
 SUBJECT_COUNT=$(echo "${SUBJECTS}" | wc -w | tr -d '[:space:]')
 
-if [ $NUM_CONSECUTIVE_JOBS -gt $SUBJECT_COUNT ]; then
-    NUM_CONSECUTIVE_JOBS=$SUBJECT_COUNT
+if [ $NUM_PARALLEL_JOBS -gt $SUBJECT_COUNT ]; then
+    NUM_PARALLEL_JOBS=$SUBJECT_COUNT
     echo "$APPTAG INFO: Reducing number of threads to the number of subjects, which is $SUBJECT_COUNT."
 fi
 
-echo "$APPTAG Parallelizing over the ${SUBJECT_COUNT} subjects in file '${SUBJECTS_FILE}' using $NUM_CONSECUTIVE_JOBS threads."
+echo "$APPTAG Parallelizing over the ${SUBJECT_COUNT} subjects in file '${SUBJECTS_FILE}' using $NUM_PARALLEL_JOBS threads."
 
 # We can check already whether the subjects exist.
 for SUBJECT in $SUBJECTS; do
@@ -112,7 +122,7 @@ fi
 ## A simple example for a command.
 #PER_SUBJECT_CMD="recon-all -s {} -qcache -measure ${MEASURE}"
 
-echo "$APPTAG Running longitudinal lGI for $SUBJECT_COUNT subjects in parallel (${NUM_CONSECUTIVE_JOBS} threads)."
+echo "$APPTAG Running longitudinal lGI for $SUBJECT_COUNT subjects in parallel (${NUM_PARALLEL_JOBS} threads)."
 
 EXEC_PATH_OF_THIS_SCRIPT=$(dirname $0)
 CARGO_SCRIPT="${EXEC_PATH_OF_THIS_SCRIPT}/compute_lgi_long.bash"
@@ -124,6 +134,6 @@ fi
 
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_PARALLEL_LGI_${DATE_TAG}.txt "$CARGO_SCRIPT {}"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_PARALLEL_LGI_${DATE_TAG}.txt "$CARGO_SCRIPT {}"
 
 

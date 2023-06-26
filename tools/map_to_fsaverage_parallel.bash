@@ -20,10 +20,21 @@ APPTAG="[MAP_PAR]"
 # See 'man parallel' for details.
 
 
-NUM_CONSECUTIVE_JOBS="$3"
-if [ -z "$NUM_CONSECUTIVE_JOBS" ]; then
-    NUM_CONSECUTIVE_JOBS=22
-    echo "$APPTAG Number of parallel jobs not specified on command line, defaulting to $NUM_CONSECUTIVE_JOBS jobs."
+NUM_PARALLEL_JOBS="$3"
+if [ -z "$NUM_PARALLEL_JOBS" ]; then
+    # auto-determine number of parallel jobs
+    OS="$(uname -s)"
+    if [ "$OS" = "Linux" ]; then
+        NUM_PARALLEL_JOBS="$(nproc --all)"
+    elif [ "$OS" = "Darwin" ] || \
+            [ "$(echo "$OS" | grep -q BSD)" = "BSD" ]; then
+        NUM_PARALLEL_JOBS="$(sysctl -n hw.ncpu)"
+    else
+        NUM_PARALLEL_JOBS="$(getconf _NPROCESSORS_ONLN)"  # glibc/coreutils fallback
+    fi
+    # feel free to override manually here:
+    # NUM_PARALLEL_JOBS=8
+    echo "$APPTAG Number of parallel jobs not specified on command line, defaulting to $NUM_PARALLEL_JOBS jobs."
 fi
 ###### End of job settings #####
 
@@ -96,7 +107,7 @@ SUBJECTS=$(cat "${SUBJECTS_FILE}" | tr -d '\r' | tr '\n' ' ')    # fix potential
 SUBJECT_COUNT=$(echo "${SUBJECTS}" | wc -w | tr -d '[:space:]')
 
 
-echo "$APPTAG Parallelizing over the ${SUBJECT_COUNT} subjects in file '${SUBJECTS_FILE}' using ${NUM_CONSECUTIVE_JOBS} threads."
+echo "$APPTAG Parallelizing over the ${SUBJECT_COUNT} subjects in file '${SUBJECTS_FILE}' using ${NUM_PARALLEL_JOBS} threads."
 
 # We can check already whether the subjects exist.
 for SUBJECT in $SUBJECTS; do
@@ -148,8 +159,8 @@ if [ ! -x "${CARGO_SCRIPT}" ]; then
     exit
 fi
 
-echo "$APPTAG Mapping measure $MEASURE to $TEMPLATE_SUBJECT for $SUBJECT_COUNT subjects in dir $SUBJECTS_DIR using $NUM_CONSECUTIVE_JOBS $cores."
+echo "$APPTAG Mapping measure $MEASURE to $TEMPLATE_SUBJECT for $SUBJECT_COUNT subjects in dir $SUBJECTS_DIR using $NUM_PARALLEL_JOBS $cores."
 
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_MAP_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $MEASURE $TEMPLATE_SUBJECT $FORCE $RENAME_ONLY"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_MAP_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $MEASURE $TEMPLATE_SUBJECT $FORCE $RENAME_ONLY"

@@ -70,10 +70,18 @@ if [ ! -f "$SUBJECTS_FILE" ]; then
     exit 1
 fi
 
-NUM_CONSECUTIVE_JOBS="$4"
-if [ -z "$NUM_CONSECUTIVE_JOBS" ]; then
-    NUM_CONSECUTIVE_JOBS=22
-    echo "$APPTAG Number of parallel jobs not specified on command line, defaulting to $NUM_CONSECUTIVE_JOBS jobs."
+NUM_PARALLEL_JOBS="$4"
+if [ -z "$NUM_PARALLEL_JOBS" ]; then
+    OS="$(uname -s)"
+    if [ "$OS" = "Linux" ]; then
+        NUM_PARALLEL_JOBS="$(nproc --all)"
+    elif [ "$OS" = "Darwin" ] || \
+            [ "$(echo "$OS" | grep -q BSD)" = "BSD" ]; then
+        NUM_PARALLEL_JOBS="$(sysctl -n hw.ncpu)"
+    else
+        NUM_PARALLEL_JOBS="$(getconf _NPROCESSORS_ONLN)"  # glibc/coreutils fallback
+    fi
+    echo "$APPTAG Number of parallel jobs not specified on command line, defaulting to $NUM_PARALLEL_JOBS jobs."
 fi
 
 
@@ -91,7 +99,7 @@ SUBJECTS=$(cat "${SUBJECTS_FILE}" | tr -d '\r' | tr '\n' ' ')    # fix potential
 SUBJECT_COUNT=$(echo "${SUBJECTS}" | wc -w | tr -d '[:space:]')
 
 
-echo "$APPTAG Parallelizing over the ${SUBJECT_COUNT} subjects in file '${SUBJECTS_FILE}' using ${NUM_CONSECUTIVE_JOBS} threads."
+echo "$APPTAG Parallelizing over the ${SUBJECT_COUNT} subjects in file '${SUBJECTS_FILE}' using ${NUM_PARALLEL_JOBS} threads."
 
 # We can check already whether the subjects exist.
 for SUBJECT in $SUBJECTS; do
@@ -100,16 +108,6 @@ for SUBJECT in $SUBJECTS; do
     exit 1
   fi
 done
-
-################### JOB SETTINGS -- adjust this ##################
-
-#echo ${SUBJECTS} | tr ' ' '\n' | parallel "echo {}"            # Debug: This only print one subject per line.
-
-## The full command that will be run for each subject. The {} will be replaced by the subject id. You could get additional args from whereever and add them (e.g., from $2 .. $n of this script. Keep in mind that $1 is already in use!).
-
-
-## A simple example for a command.
-#PER_SUBJECT_CMD="recon-all -s {} -qcache -measure ${MEASURE}"
 
 
 
@@ -129,4 +127,4 @@ fi
 
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_CONSECUTIVE_JOBS} --workdir . --joblog LOGFILE_SMOOTH_FWHM_${FWHM}_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $MEASURE $FWHM $TEMPLATE_SUBJECT"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_SMOOTH_FWHM_${FWHM}_PARALLEL_${DATE_TAG}.txt "$CARGO_SCRIPT {} $MEASURE $FWHM $TEMPLATE_SUBJECT"
