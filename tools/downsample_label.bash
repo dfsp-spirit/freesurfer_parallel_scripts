@@ -25,8 +25,6 @@ if [ -n "$3" ]; then
     ICO_ORDER=$3
 fi
 
-
-
 export SUBJECTS_DIR=$(pwd)
 
 if [ ! -d "${SUBJECT}" ]; then
