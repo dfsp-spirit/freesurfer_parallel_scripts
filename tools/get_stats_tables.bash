@@ -16,7 +16,7 @@
 ### Settings ###
 
 do_aseg_stats="no"   # set to "yes" or "no"
-atlas="aparc.a2009s" # set to "aparc" or "aparc.a2009s" (or a custom atlas if you have already applied it to subjects)
+atlas="aparc" # set to "aparc" or "aparc.a2009s" (or a custom atlas if you have already applied it to subjects)
 measures="thickness area volume"   # the per-vertex descriptor files to use (aka "surface overlays")
 
 ### End of Settings ###
