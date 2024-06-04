@@ -1,4 +1,0 @@
-ArrayTaskID NumSubjects Subjects
-0 20 subject1,subject2,subject3,subject4,subject5,subject6,subject7,subject8,subject9,subject10,subject11,subject12,subject13,subject14,subject15,subject16,subject17,subject18,subject19,subject20
-1 20 subject21,subject22,subject23,subject24,subject25,subject26,subject27,subject28,subject29,subject30,subject31,subject32,subject33,subject34,subject35,subject36,subject37,subject38,subject39,subject40
-2 4 subject41,subject42,subject43,subject44
