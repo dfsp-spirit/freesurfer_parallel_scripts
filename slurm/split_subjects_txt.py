@@ -28,47 +28,21 @@ import numpy as np
 import logging
 import argparse
 import os.path
+import sys
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+sh = logging.StreamHandler(sys.stdout)
+fmt_interactive = logging.Formatter("%(asctime)s - %(levelname)s: %(message)s", "%H:%M:%S")
+sh.setFormatter(fmt_interactive)
+logger.addHandler(sh)
+
 
 
 def read_subjects_file(subjects_file : str) -> List[str]:
     with open(subjects_file) as file:
         subjects = [l.strip() for l in file.readlines()]
     return subjects
-
-def subjects_txt_to_jobarray_config(subjects_file : str, num_parallel_jobs_max : Union[int, None] = None, subject_separator : str = ","):
-
-    subjects : List[str] = read_subjects_file(subjects_file)
-
-    res = "ArrayTaskID NumSubjects Subjects\n"  # header row
-
-    if num_parallel_jobs_max is None:
-        num_parallel_jobs_max = len(subjects)
-
-    num_subjects = len(subjects)
-    num_full_jobs = math.floor(num_subjects / num_parallel_jobs_max)
-    num_in_last_job = num_subjects % num_parallel_jobs_max
-    num_jobs_total = num_full_jobs + int(num_in_last_job > 0)
-
-    num_subjects_per_job = [num_parallel_jobs_max] * num_full_jobs
-    if num_jobs_total > num_full_jobs:
-        num_subjects_per_job.append(num_in_last_job)
-
-    subjects = np.array(subjects)
-    current_idx = 0
-    for jobidx, subjects_count_current_job in enumerate(num_subjects_per_job):
-        start_idx = current_idx
-        end_idx = start_idx + subjects_count_current_job
-        logger.info(f"At job {jobidx+1} (index {jobidx}) of {num_jobs_total}: using subject indices {start_idx} to {end_idx}.")
-        subjects_this_job = subjects[start_idx:end_idx]
-        assert len(subjects_this_job) == subjects_count_current_job, f"Expected {subjects_count_current_job} subjects, got {len(subjects_this_job)} at job with index {jobidx}."
-        subjects_string_this_job = subject_separator.join(subjects_this_job.tolist())
-        res += f"{jobidx} {subjects_count_current_job} {subjects_string_this_job}\n"
-        current_idx = end_idx
-
-    return res
 
 
 def split_subjects_txt_into_chunks(subjects_file : str, num_parallel_jobs : Union[int, None] = None):
@@ -104,7 +78,9 @@ def split_subjects_txt_into_chunks(subjects_file : str, num_parallel_jobs : Unio
     num_subjects_per_job : List[int] = [num_subjects_per_job] * num_parallel_jobs
     if num_in_last_job != num_subjects_per_job:
         num_subjects_per_job[-1] = num_in_last_job
-    logger.info(f'Subjects per job ({len(num_subjects_per_job)} entries): {num_subjects_per_job} ')
+    num_jobs = np.sum(num_subjects_per_job)
+    assert num_jobs == num_subjects, f"Mismatch between sum of job count list and total number of subjects in source subjects file."
+    logger.info(f'Subjects per job ({len(num_subjects_per_job)} entries, sum={num_jobs}): {num_subjects_per_job} ')
 
     subjects = np.array(subjects)
     current_idx : int = 0
@@ -118,6 +94,8 @@ def split_subjects_txt_into_chunks(subjects_file : str, num_parallel_jobs : Unio
         tfile : str = f"subjects_job{jobidx}.txt"
         write_to_textfile(tfile, subjects_file_lines)
         current_idx = end_idx
+
+    logger.info(f"All {len(num_subjects_per_job)} files written.")
 
     return len(num_subjects_per_job)
 
@@ -139,8 +117,9 @@ if __name__ == "__main__":
 
 
     subjects_file = args.subjects_file
-    num_parallel_jobs_max = args.num_chunks
-    num_files : int  = split_subjects_txt_into_chunks(subjects_file, num_parallel_jobs_max)
+    num_parallel_jobs = args.num_chunks
+    logger.info(f"Splitting file '{subjects_file}' into {num_parallel_jobs} chunks.")
+    num_files : int  = split_subjects_txt_into_chunks(subjects_file, num_parallel_jobs)
     if os.path.isfile(f"subjects_job{num_files}.txt"):
         logger.warning(f"WARNING: Wrote {num_files} subjects files (subjects_job0.txt .. subjects_job{num_files -1}.txt), but the file 'subjects_job{num_files}.txt' also exists, maybe from an older run?")
         logger.warning(f"WARNING (cont.): You may want to delete old 'subjects_job*' files before a run to avoid confusion.")
