@@ -44,9 +44,43 @@ def subjects_txt_to_jobarray_config(subjects_file : str, num_parallel_jobs_max :
     return res
 
 
+def subjects_txt_to_jobarray_config_sf(subjects_file : str, num_parallel_jobs_max : Union[int, None] = None):
+
+    subjects : List[str] = read_subjects_file(subjects_file)
+
+    res = "ArrayTaskID NumSubjects Subjects\n"  # header row
+
+    if num_parallel_jobs_max is None:
+        num_parallel_jobs_max = len(subjects)
+
+    num_subjects = len(subjects)
+    num_subjects_max_per_jobs = math.ceil(num_subjects / num_parallel_jobs_max)
+    num_in_last_job = num_subjects % num_parallel_jobs_max
+    
+
+    num_subjects_per_job = [num_subjects_max_per_jobs] * num_parallel_jobs_max 
+    if num_in_last_job > 0:
+        num_subjects_per_job[-1] = num_in_last_job  
+
+    subjects = np.array(subjects)
+    current_idx = 0
+    for jobidx, subjects_count_current_job in enumerate(num_subjects_per_job):
+        start_idx = current_idx
+        end_idx = start_idx + subjects_count_current_job
+        print(f"At job {jobidx+1} (index {jobidx}) of {num_parallel_jobs_max}: using subject indices {start_idx} to {end_idx}.")
+        subjects_this_job = subjects[start_idx:end_idx]
+        assert len(subjects_this_job) == subjects_count_current_job, f"Expected {subjects_count_current_job} subjects, got {len(subjects_this_job)} at job with index {jobidx}."
+        subjects_file_lines = "\n".join(subjects_this_job)
+        tfile = f"subjects{jobidx}.txt"
+        write_to_textfile(tfile, subjects_file_lines)
+        current_idx = end_idx 
+
+    return res
+
+
 def write_to_textfile(filepath : str, contents : str) -> None:
     f = open(filepath, "w")
-    f.write(res)
+    f.write(contents)
     f.close()
     print(f"Result written to file '{filepath}'.")
 
@@ -56,8 +90,6 @@ if __name__ == "__main__":
     subjects_file = "subjects.txt"  # input file. we could get these from the command line later.
     num_parallel_jobs_max = 20
     subject_separator : str = ","
-    output_file = "jobarray_config.txt"
-    res = subjects_txt_to_jobarray_config(subjects_file, num_parallel_jobs_max, subject_separator)
-    write_to_textfile(output_file, res)
+    subjects_txt_to_jobarray_config_sf(subjects_file, num_parallel_jobs_max)
 
 

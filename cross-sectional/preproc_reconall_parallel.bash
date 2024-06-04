@@ -40,7 +40,7 @@ if [ -z $MODE ]; then
     echo "$APPTAG USAGE: $0 <mode> [<num_cpu> [<email>] [<subjects_file>]]]"
     echo "$APPTAG     <mode>    : One of 'fsdir', 'recon', 'fsdir+recon' or 'status'."
     echo "$APPTAG     <num_cpu> : Number of CPUs to use for parallel, optional. Put the number of cores your machine has minus one. Defaults to 20 if omitted. Note: This system seems to have ${NUM_SYS_CORES} cores."
-    echo "$APPTAG     <email>   : Email to notify when recon-all completed, optional. Requires working sendmail setup. Ignored in all modes which do not include 'recon'."
+    echo "$APPTAG     <email>   : Email to notify when recon-all completed, optional. Requires working sendmail setup. Ignored in all modes which do not include 'recon'. Supply 'none' if you dont want emails."
     echo "$APPTAG     <subjects_file> : custom subjects file name to use. Optional. Will be created based on dir contents if it does not exist yet."
     echo "$APPTAG EXAMPLES"
     echo "$APPTAG     - Run complete pipeline (first dir creation, then recon-all) using 10 cores and report to me@blah.de using sendmail when it finished:"
@@ -177,7 +177,7 @@ if [ "${DO_RUN_RECON_ALL}" = "yes" ]; then
 
 	cat ${SUBJECTS_FILE} | parallel --workdir . --joblog LOGFILE.txt "$PATH_TO_SSCRIPT {}"
 
-    if [ -n "${FINISH_NOTIFICATION_EMAIL_ADDRESS}" ]; then
+    if [ -n "${FINISH_NOTIFICATION_EMAIL_ADDRESS}" -a "${FINISH_NOTIFICATION_EMAIL_ADDRESS}" != "none"  ]; then
 
         # Check for sendmail
         SENDMAIL_BINARY=$(which sendmail)
