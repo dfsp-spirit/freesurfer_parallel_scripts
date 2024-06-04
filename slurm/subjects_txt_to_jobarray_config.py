@@ -44,10 +44,20 @@ def subjects_txt_to_jobarray_config(subjects_file : str, num_parallel_jobs_max :
     return res
 
 
+def write_to_textfile(filepath : str, contents : str) -> None:
+    f = open(filepath, "w")
+    f.write(res)
+    f.close()
+    print(f"Result written to file '{filepath}'.")
+
+
 
 if __name__ == "__main__":
-    subjects_file = "subjects.txt"  # we could get these from the command line later.
-    num_parallel_jobs_max = None
+    subjects_file = "subjects.txt"  # input file. we could get these from the command line later.
+    num_parallel_jobs_max = 20
     subject_separator : str = ","
+    output_file = "jobarray_config.txt"
     res = subjects_txt_to_jobarray_config(subjects_file, num_parallel_jobs_max, subject_separator)
-    print(res)
+    write_to_textfile(output_file, res)
+
+
