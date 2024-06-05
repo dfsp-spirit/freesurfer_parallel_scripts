@@ -9,7 +9,7 @@
 #SBATCH --job-name=freesurfer
 
 # 20 jobs will run in this array at the same time
-#SBATCH --array=1-20
+#SBATCH --array=0-19
 
 # Set run time. Note that this should be set to `TIME_PER_SUBJECT * max(subjects_per_job)`, where the latter is computed by the
 # Python script subjects_txt_to_jobarray_config.py and visible in jobarray_config.txt.
