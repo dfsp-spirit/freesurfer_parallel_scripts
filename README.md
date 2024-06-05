@@ -4,11 +4,13 @@ Shell scripts to run FreeSurfer's recon-all in parallel on multi-core machines.
 
 ## About
 
-[FreeSurfer](https://freesurfer.net/) is a state-of-the-art neuroimaging software suite, and its `recon-all` pipeline supports the fully automated reconstruction of mesh representations of the human cortex from raw MRI scans. 
+[FreeSurfer](https://freesurfer.net/) is a state-of-the-art neuroimaging software suite, and its `recon-all` pipeline supports the fully automated reconstruction of mesh representations of the human cortex from raw MRI scans.
 
 However, running `recon-all` takes very long (12 - 20 h per subject on current hardware) and typically needs to be run for hundreds of subjects for a medium-sized neuroimaging study. This repo contains bash shell scripts which allow one to run the time-consuming FreeSurfer pre-processing **in parallel** on multi-core systems. The parallelization is done on the subject level, meaning that a single subject still takes a long time, but each core of your computer runs one subject. The main tool behind this is the [GNU parallel](https://www.gnu.org/software/parallel/) software.
 
-These scripts are mainly intended for running FreeSurfer on powerful workstation computers in a lab. They are **not** suitable for running FreeSurfer on high performance computing (HPC) clusters which use a job scheduler like Slurm.
+These scripts are mainly intended for running FreeSurfer on powerful multi-core workstation computers in a lab.
+
+The tools in the [slurm folder](./slurm/) are suitable for running FreeSurfer on high performance computing (HPC) clusters which use the Slurm job scheduler. They implement a method to combine slurm for parallization across nodes with GNU parallel parallelization on the nodes.
 
 ![Vis](https://github.com/dfsp-spirit/freesurfer_parallel_scripts/blob/main/web/freesurfer_parallel_scripts.png?raw=true "freesurfer_parallel_scripts")
 
@@ -74,10 +76,10 @@ The [tools directory](./tools/) contains many scripts to perform various tasks t
 * [copy only certain files from a FreeSurfer SUBJECTS_DIR to a new directory tree](./tools/deepcopy_brain_measures_only.bash) while keeping the directory layout
 * ...
 
-See [all scripts](./tools/). 
+See [all scripts](./tools/).
 
 ## Detailed usage instructions
 
-These can be found in the scripts, just open them with a proper text editor like [Atom](https://atom.io/) or [vscode](https://code.visualstudio.com/). 
+These can be found in the scripts, just open them with a proper text editor like [Atom](https://atom.io/) or [vscode](https://code.visualstudio.com/).
 
 This does not mean that there are no good instructions. It's just that duplicating the docs on this website does not make any sense: it is very likely that I would forget updating the website when I change the scripts. I'm much more likely to adapt the instructions in the scripts when editing them.
