@@ -123,6 +123,7 @@ if __name__ == "__main__":
     if os.path.isfile(f"subjects_job{num_files}.txt"):
         logger.warning(f"WARNING: Wrote {num_files} subjects files (subjects_job0.txt .. subjects_job{num_files -1}.txt), but the file 'subjects_job{num_files}.txt' also exists, maybe from an older run?")
         logger.warning(f"WARNING (cont.): You may want to delete old 'subjects_job*' files before a run to avoid confusion.")
+    logger.warning(f"Please set the number of jobs in the submit.sh script (in the 'SBATCH --array' line) to {num_files}.")
 
 
 
