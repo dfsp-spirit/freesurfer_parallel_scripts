@@ -10,7 +10,7 @@ However, running `recon-all` takes very long (12 - 20 h per subject on current h
 
 These scripts are mainly intended for running FreeSurfer on powerful multi-core workstation computers in a lab.
 
-The tools in the [slurm folder](./slurm/) are suitable for running FreeSurfer on high performance computing (HPC) clusters which use the Slurm job scheduler. They implement a method to combine slurm for parallization across nodes with GNU parallel parallelization on the nodes.
+The tools in the [slurm folder](./slurm/) are suitable for running FreeSurfer on high performance computing (HPC) clusters which use the [Slurm job scheduler](https://slurm.schedmd.com). The scripts implement a method to combine `Slurm` for parallelization across nodes with `GNU Parallel` for parallelization on the nodes.
 
 ![Vis](https://github.com/dfsp-spirit/freesurfer_parallel_scripts/blob/main/web/freesurfer_parallel_scripts.png?raw=true "freesurfer_parallel_scripts")
 
