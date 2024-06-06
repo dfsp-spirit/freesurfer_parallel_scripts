@@ -35,6 +35,6 @@ You already have or can obtain:
 
 1. Replace the demo `subjects.txt` file in the directory with your own file.
 2. Split your `subjects.txt` file with the provided script. Let's assume you want 20 jobs, then you would do: ```python split_subjects_txt.py 20 subjects.txt```
-3. Adapt the `submit.sh` script to the environment of your HPC cluster. E.g., adapt the path to your MRI data on the cluster in the scripts, and any other variables that require a change. Read the cluster-specific documentation or ask your cluster admin team if you need help. Please do not contact me, I cannot help, as the setup you need is specific to your cluster.
+3. Adapt the `submit.sh` script to the environment of your HPC cluster. E.g., adapt the path to your MRI data on the cluster in the scripts, and any other variables that require a change. Read the cluster-specific documentation or ask your cluster admin team if you need help.
 4. Run ```sbatch submit.sh``` on the cluster head to submit the jobs.
 
