@@ -6,6 +6,8 @@
 # This script is used for preparing a FreeSurfer subject for upload to our web server, so
 # that users of the fsbrain R package can download the subject and use it in R after they
 # accept the FreeSurfer license agreement.
+#
+# Written by Tim Schaefer, 2024. License: MIT. Tested with Python 3.10.
 
 import os
 from typing import List
