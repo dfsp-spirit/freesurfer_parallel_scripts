@@ -91,11 +91,14 @@ def subject_files_md5():
     parser = argparse.ArgumentParser(description='Compute md5sum of all relevant subject files')
     parser.add_argument('subject_dir', type=str, help='Path to the subject directory (<SUBJECTS_DIR>/<your_subject>).')
     parser.add_argument('--print', type=str, help='What to print, one of "md5", "fullpath", "innerpath", "Rpath", "full_with_md5", or "all". Defaults to "full_with_md5".', default="full_with_md5")
+    parser.add_argument('--copy', type=str, help='Optional, a directory where to copy the files for which md5sums were computed. Must exist and be writable. Omit if you do not want to copy.')
     args = parser.parse_args()
 
     subject_dir = args.subject_dir
     toprint = args.print
     subject_files = get_relevant_subject_files(subject_dir)
+    copydir = args.copy
+
 
     if not os.path.exists(subject_dir):
         logger.error("Subject directory not found: " + subject_dir)
@@ -107,6 +110,17 @@ def subject_files_md5():
 
     for file in subject_files:
         file_path = os.path.join(subject_dir, *file)
+
+        if copydir:
+            if not os.path.exists(copydir):
+                logger.error("Copy directory specified with argument --copy not found, it must exist: '" + copydir + "'")
+                sys.exit(1)
+            else:
+                import shutil
+                copy_path = os.path.join(copydir, *file)
+                os.makedirs(os.path.dirname(copy_path), exist_ok=True)
+                shutil.copy(file_path, copy_path)
+
         inner_path = os.path.join(*file)
         custom_path_for_R = "c(base_path_subject, " + ",".join(f"'{f}'" for f in file) + "),"
         #print(md5sum(file_path) + "  " + file_path + "  " + inner_path + "  " + custom_path_for_R)
