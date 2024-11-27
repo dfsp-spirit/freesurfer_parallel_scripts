@@ -99,7 +99,7 @@ def subject_files_md5():
     import argparse
     parser = argparse.ArgumentParser(description='Compute md5sum of all relevant subject files')
     parser.add_argument('subject_dir', type=str, help='Path to the subject directory (<SUBJECTS_DIR>/<your_subject>).')
-    parser.add_argument('--print', type=str, help='What to print, one of "md5", "fullpath", "innerpath", "Rpath", "full_with_md5", or "all". Defaults to "full_with_md5".', default="full_with_md5")
+    parser.add_argument('--print', type=str, help='What to print, one of "md5", "md5R", "fullpath", "innerpath", "innerpathR" "Rpath", "full_with_md5", or "all". Defaults to "full_with_md5".', default="full_with_md5")
     parser.add_argument('--copy', type=str, help='Optional, a directory where to copy the files for which md5sums were computed. Must exist and be writable. Omit if you do not want to copy.')
     args = parser.parse_args()
 
@@ -113,7 +113,7 @@ def subject_files_md5():
         logger.error("Subject directory not found: " + subject_dir)
         sys.exit(1)
 
-    if not toprint in ["md5", "fullpath", "innerpath", "Rpath", "full_with_md5", "all"]:
+    if not toprint in ["md5", "md5R", "fullpath", "innerpath", "innerpathR", "Rpath", "full_with_md5", "all"]:
         logger.error("Invalid print option: " + toprint)
         sys.exit(1)
 
@@ -135,10 +135,14 @@ def subject_files_md5():
         #print(md5sum(file_path) + "  " + file_path + "  " + inner_path + "  " + custom_path_for_R)
         if toprint == "md5" or toprint == "all":
             print(md5sum(file_path))
+        if toprint == "md5R" or toprint == "all":
+            print("'" + md5sum(file_path) + "',  #" + inner_path)
         if toprint == "fullpath" or toprint == "all":
             print(file_path)
         if toprint == "innerpath" or toprint == "all":
             print(inner_path)
+        if toprint == "innerpathR" or toprint == "all":
+            print("'" + inner_path + "',")
         if toprint == "Rpath" or toprint == "all":
             print(custom_path_for_R)
         if toprint == "full_with_md5" or toprint == "all":
