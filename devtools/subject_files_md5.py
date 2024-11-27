@@ -1,4 +1,11 @@
 #!/usr/bin/which python
+#
+# This script computes the md5sum of all relevant files in a FreeSurfer subject directory.
+# It also allows to copy the files to a specified directory.
+#
+# This script is used for preparing a FreeSurfer subject for upload to our web server, so
+# that users of the fsbrain R package can download the subject and use it in R after they
+# accept the FreeSurfer license agreement.
 
 import os
 from typing import List
