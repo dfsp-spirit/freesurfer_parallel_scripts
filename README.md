@@ -1,6 +1,7 @@
 # freesurfer_parallel_scripts
 Shell scripts to run FreeSurfer's recon-all in parallel on multi-core machines.
 
+[![DOI](https://zenodo.org/badge/420029643.svg)](https://doi.org/10.5281/zenodo.19593556)
 
 ## About
 
