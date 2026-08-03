@@ -1,6 +1,9 @@
 # freesurfer_parallel_scripts
 Shell scripts to run FreeSurfer's recon-all in parallel on multi-core machines.
 
+Developed during my time in [Christine Ecker](https://scholar.google.com/citations?user=QKKCS-YAAAAJ&hl=en)'s [Lab](https://www.unimedizin-ffm.de/einrichtungen/kliniken/zentrum-fuer-psychische-gesundheit/psychiatrie-psychosomatik-und-psychotherapie-des-kindes-und-jugendalters/forschung/laboratory-of-neuroimaging) at [KGU](https://www.unimedizin-ffm.de/), Frankfurt am Main, Germany.
+
+
 [![DOI](https://zenodo.org/badge/420029643.svg)](https://doi.org/10.5281/zenodo.19593556)
 
 ## About
