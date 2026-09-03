@@ -87,7 +87,7 @@ fi
 
 
 
-# Check for borken line endings (Windows line endings, '\r\n') in subjects.txt file, a very common error.
+# Check for broken line endings (Windows line endings, '\r\n') in subjects.txt file, a very common error.
 # This script can cope with these line endings, but we still warn the user because other scripts may choke on them.
 NUM_BROKEN_LINE_ENDINGS=$(grep -U $'\015' "${SUBJECTS_FILE}" | wc -l | tr -d '[:space:]')
 if [ $NUM_BROKEN_LINE_ENDINGS -gt 0 ]; then

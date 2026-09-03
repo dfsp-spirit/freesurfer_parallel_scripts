@@ -8,7 +8,7 @@
 # space of trg_subject. Whether these are templates (like fsaverage6) does not matter.
 #
 # USAGE:
-# 1) Run this is a directory that has the FreeSurfer folders for the sourcve and target subjects
+# 1) Run this in a directory that has the FreeSurfer folders for the source and target subjects
 # 2) Place the data to be mapped in the surf/ dir of the source subject in the expected files,
 # i.e., surf/lh.<measure> and surf/rh.<measure>.
 #
@@ -24,7 +24,7 @@ do_perform_smoothing="no"  # Needs to be "yes" if you want to smooth in target s
 
 ### Start of script ###
 
-apptag="[MAP_PVD_BETWEEN_SUBJECTS]##### "
+apptag="[MAP_PVD_BETWEEN_SUBJECTS]"
 
 measure="$1"
 if [ -z "$measure" ]; then
@@ -43,7 +43,7 @@ if [ ! -d "$src_subject" ]; then
 fi
 
 if [ ! -d "$trg_subject" ]; then
-  echo "Missing target subject directory '$strg_subject', please run in a directory that has it."
+  echo "Missing target subject directory '$trg_subject', please run in a directory that has it."
   exit 1
 fi
 
@@ -60,7 +60,7 @@ for hemi in lh rh; do
 
   mris_apply_reg --src $src_file --streg $src_subject/surf/${hemi}.sphere.reg $trg_subject/surf/${hemi}.sphere.reg --trg $mapped_file
   if [ ! -f "$mapped_file" ]; then
-    echo "$apptag ERROR: Expected output mapped file '$mapped_file' does not exist".
+    echo "$apptag ERROR: Expected output mapped file '$mapped_file' does not exist."
     exit 1
   else
     echo "$apptag Mapped file for hemi $hemi written to '$mapped_file'."
@@ -72,8 +72,8 @@ for hemi in lh rh; do
       echo "$apptag Smoothing mapped data on surface of subject $trg_subject with fwhm $fwhm."
       mapped_smoothed_file="$src_subject/surf/${hemi}.${measure}.fwhm$fwhm.${trg_subject}.mgh"
       mri_surf2surf --prune --s $trg_subject --hemi ${hemi} --fwhm $fwhm --sval $mapped_file --tval $mapped_smoothed_file
-      if [ ! -f "$mapped_file" ]; then
-        echo "$apptag ERROR: Expected output mapped and smoothed file '$mapped_smoothed_file' does not exist".
+      if [ ! -f "$mapped_smoothed_file" ]; then
+        echo "$apptag ERROR: Expected output mapped and smoothed file '$mapped_smoothed_file' does not exist."
         exit 1
       else
         echo "$apptag Smoothed file for hemi $hemi FWHM $fwhm written to '$mapped_smoothed_file'."

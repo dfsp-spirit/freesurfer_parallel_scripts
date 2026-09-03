@@ -11,13 +11,13 @@
 # 20 jobs will run in this array at the same time
 #SBATCH --array=0-19
 
-# Set run time. Note that this should be set to `TIME_PER_SUBJECT * max(subjects_per_job)`, where the latter is computed by the
-# Python script subjects_txt_to_jobarray_config.py and visible in jobarray_config.txt.
-# The time per subject should be something between 10 and 20 hours for FreeSurfer, depending on the hardware.
+# Set run time. Note that this should be set to `TIME_PER_SUBJECT * max(subjects_per_job)`, where the latter depends on how
+# many jobs split_subjects_txt.py created (see its output). The time per subject should be something between 10 and 20 hours
+# for FreeSurfer, depending on the hardware.
 #              d-hh:mm:ss
 #SBATCH --time=0-20:00:00
 
-# 500MB memory per core. currenlty not set.
+# 500MB memory per core. currently not set.
 # this is a hard limit
 ####SBATCH --mem-per-cpu=500MB
 
@@ -37,7 +37,7 @@ if [ -z "${SLURM_JOBID}" ]; then
     SLURM_ARRAY_TASK_ID=1
 fi
 
-# This is the directory into which you cloned https://github-com/dfsp-spirit/freesurfer_parallel_scripts, via the `git clone` command.
+# This is the directory into which you cloned https://github.com/dfsp-spirit/freesurfer_parallel_scripts, via the `git clone` command.
 fsparallel_dir=$HOME/develop/freesurfer_parallel_scripts
 subjects_dir="/path/to/your_freesurfer_data"
 

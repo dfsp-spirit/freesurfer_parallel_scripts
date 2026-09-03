@@ -1,10 +1,10 @@
 #!/bin/bash
 # parallel_downsample_label.bash -- downsample a label (like <subject>/label/lh.cortex.label) in parallel for many subjects.
 #
-# HOW TO TO USE THIS script
+# HOW TO USE THIS script
 #  1) Copy it wherever you like and make sure it is executable (run `chmod +x parallel_downsample_label.bash`)
 #  2) Set your SUBJECTS_DIR environment variable and change into your SUBJECTS_DIR. You should have a subjects.txt file in there.
-#  3) Run: `path/to/parallel_gen_mid_surface.bash subjects.txt`
+#  3) Run: `path/to/parallel_downsample_label.bash subjects.txt`
 #
 # Written by Tim, 2023-06-26
 #
@@ -38,7 +38,13 @@ ICO_ORDER=6
 
 ## check some stuff
 if [ -z "${SUBJECTS_DIR}" ]; then
-    echo "$APPTAG WARNING: Environment variable SUBJECTS_DIR not set."
+    echo "$APPTAG ERROR: Environment variable SUBJECTS_DIR not set. Exiting."
+    exit 1
+fi
+
+if [ ! -f "${FREESURFER_HOME}/license.txt" ]; then
+    echo "$APPTAG FreeSurfer license.txt file not found (or FREESURFER_HOME environment variable not set properly). Run would fail, exiting."
+    exit 1
 fi
 
 if [ -d "${SUBJECTS_DIR}/bert" ]; then
@@ -98,4 +104,4 @@ if [ ! -x "${CARGO_SCRIPT}" ]; then
 fi
 
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_MAP_PARALLEL_DOWNSAMPLE_LABEL_${DATE_TAG}.txt "${CARGO_SCRIPT} {} $LABEL $ICO_ORDER"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_PARALLEL_DOWNSAMPLE_LABEL_${DATE_TAG}.txt "${CARGO_SCRIPT} {} $LABEL $ICO_ORDER"

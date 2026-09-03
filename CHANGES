@@ -1,6 +1,21 @@
 # FreeSurfer Parallel Scripts Changelog
 
 
+Version 1.1.0 -- Various Bug Fixes (WIP)
+-----------------------------------------
+
+* FIX: reprocess-after-manual-edits scripts never matched `_gm`/`_wm` subjects (quoted glob patterns); the parallel wrapper now exits when nothing would be processed.
+* FIX: T2/TSE images were silently ignored in the single-subject recon script (missing `$` on `TSE_OPTIONS`).
+* FIX: `NUM_CORES_TO_USE` was ignored by the parallel recon-all and reprocess invocations; empty email address no longer prints a bogus notification message.
+* FIX: longitudinal check-results script tracked missing-input subjects into the wrong variable.
+* FIX: normalized exit codes (0 = success, 1 = error) in the longitudinal and QDEC scripts.
+* FIX: `map_pervertex_data_between_subjects` checked the wrong output file; `get_stats_tables` FS6 `asegstats2table` argument order.
+* FIX: invalid `${$subject}` substitutions and deprecated `more` usage in `extract_total_brain_measures`.
+* NEW: `parallel_downsample_mesh` forwards the target template + ico order to the cargo script; `parallel_lgi_native_longitudinal` accepts an optional core count.
+* CHANGED: harmonized `SUBJECTS_DIR`/license checks across parallel wrappers; `downsample_label` no longer overrides an already-set `SUBJECTS_DIR`.
+* FIX: broken shebang in `subject_files_md5.py`; removed the `numpy` dependency from `split_subjects_txt.py`.
+* FIX: assorted typos and stale documentation references (README, slurm, script header examples).
+
 
 Version 1.0.0 -- Initial Release
 ---------------------------------

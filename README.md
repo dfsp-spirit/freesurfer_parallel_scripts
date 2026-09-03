@@ -32,7 +32,7 @@ We run this on an AMD Threadripper Linux workstation with 48 cores, 128 GB of RA
 * A working [FreeSurfer](https://freesurfer.net/) 6 or 7 installation (including proper setup for the bash shell)
 * [GNU parallel](https://www.gnu.org/software/parallel/), which is used for parallelization in all of the scripts
 
-If you start the commands on a remote workstation, e.g., via SSH, we strongly recommend to also install and use a terminal multiplexer like [GNU screen](https://www.gnu.org/software/screen/) on the remote computer so that the computations, which will take several days for large samples, will not abort if the network connection from your computer to the workstation gets lost for a second or you accidentaly close the terminal app on your local computer. This is optional though.
+If you start the commands on a remote workstation, e.g., via SSH, we strongly recommend to also install and use a terminal multiplexer like [GNU screen](https://www.gnu.org/software/screen/) on the remote computer so that the computations, which will take several days for large samples, will not abort if the network connection from your computer to the workstation gets lost for a second or you accidentally close the terminal app on your local computer. This is optional though.
 
 
 ## The scripts
@@ -71,7 +71,7 @@ The first 2 steps use a subjects file, but part 3 requires a QDEC table in longi
 The [tools directory](./tools/) contains many scripts to perform various tasks that frequently come up in computational neuroimaging. Have a look and see what's available. It includes scripts to:
 
 * [map data from native to standard space](./tools/map_to_fsaverage_parallel.bash) in parallel for many subjects
-* [downsample meshes](./tools/downsample_mesh_subject.bash) for individuals
+* [downsample meshes](./tools/downsample_mesh_subject.bash) for individual subjects, [in parallel](./tools/parallel_downsample_mesh.bash) for many subjects, and [downsample labels](./tools/downsample_label.bash) (also [in parallel](./tools/parallel_downsample_label.bash))
 * compute local gyrification index (lGI) in parallel, both for [cross-sectional](./tools/parallel_lgi_native.bash) and [longitudinal](./tools/parallel_lgi_native_longitudinal.bash) data sets
 * [smooth per-vertex data in parallel](./tools/smooth_stddata_custom_parallel.bash)
 * [generate mid surfaces (between the white and pial surface) in parallel](./tools/parallel_gen_mid_surface.bash)

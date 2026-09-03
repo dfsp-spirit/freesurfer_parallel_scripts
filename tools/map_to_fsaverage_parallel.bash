@@ -95,7 +95,7 @@ if [ -n "$6" ]; then
 fi
 
 
-# Check for borken line endings (Windows line endings, '\r\n') in subjects.txt file, a very common error.
+# Check for broken line endings (Windows line endings, '\r\n') in subjects.txt file, a very common error.
 # This script can cope with these line endings, but we still warn the user because other scripts may choke on them.
 NUM_BROKEN_LINE_ENDINGS=$(grep -U $'\015' "${SUBJECTS_FILE}" | wc -l | tr -d '[:space:]')
 if [ $NUM_BROKEN_LINE_ENDINGS -gt 0 ]; then
@@ -121,7 +121,7 @@ done
 
 #echo ${SUBJECTS} | tr ' ' '\n' | parallel "echo {}"            # Debug: This only print one subject per line.
 
-## The full command that will be run for each subject. The {} will be replaced by the subject id. You could get additional args from whereever and add them (e.g., from $2 .. $n of this script. Keep in mind that $1 is already in use!).
+## The full command that will be run for each subject. The {} will be replaced by the subject id. You could get additional args from wherever and add them (e.g., from $2 .. $n of this script. Keep in mind that $1 is already in use!).
 
 ## Feel free to use shell syntax to do stuff in the command.
 ## Here, we use another argument from the command line of this script:

@@ -24,7 +24,6 @@
 
 from typing import List, Union
 import math
-import numpy as np
 import logging
 import argparse
 import os.path
@@ -61,8 +60,9 @@ def split_subjects_txt_into_chunks(subjects_file : str, num_parallel_jobs : Unio
         num_parallel_jobs = num_subjects
 
     if num_subjects < num_parallel_jobs:
+        num_jobs_allowed : int = num_parallel_jobs
         num_parallel_jobs = num_subjects
-        logger.info(f"Note: Received only {num_subjects} subjects, so will only run {num_parallel_jobs} jobs (even if {num_parallel_jobs} are allowed).")
+        logger.info(f"Note: Received only {num_subjects} subjects, so will only run {num_parallel_jobs} jobs (even if {num_jobs_allowed} are allowed).")
 
 
     num_subjects_per_job : int = math.ceil(num_subjects / num_parallel_jobs)
@@ -75,16 +75,15 @@ def split_subjects_txt_into_chunks(subjects_file : str, num_parallel_jobs : Unio
     logger.info(f"Using {num_subjects_per_job} subjects per job, last job will contain {num_in_last_job} subjects.")
 
 
-    num_subjects_per_job : List[int] = [num_subjects_per_job] * num_parallel_jobs
+    subjects_per_job : List[int] = [num_subjects_per_job] * num_parallel_jobs
     if num_in_last_job != num_subjects_per_job:
-        num_subjects_per_job[-1] = num_in_last_job
-    num_jobs = np.sum(num_subjects_per_job)
+        subjects_per_job[-1] = num_in_last_job
+    num_jobs = sum(subjects_per_job)
     assert num_jobs == num_subjects, f"Mismatch between sum of job count list and total number of subjects in source subjects file."
-    logger.info(f'Subjects per job ({len(num_subjects_per_job)} entries, sum={num_jobs}): {num_subjects_per_job} ')
+    logger.info(f'Subjects per job ({len(subjects_per_job)} entries, sum={num_jobs}): {subjects_per_job} ')
 
-    subjects = np.array(subjects)
     current_idx : int = 0
-    for jobidx, subjects_count_current_job in enumerate(num_subjects_per_job):
+    for jobidx, subjects_count_current_job in enumerate(subjects_per_job):
         start_idx : int = current_idx
         end_idx : int = start_idx + subjects_count_current_job
         logger.info(f"At job {jobidx+1} (index {jobidx}) of {num_parallel_jobs}: using subject indices {start_idx} to {end_idx}.")
@@ -95,9 +94,9 @@ def split_subjects_txt_into_chunks(subjects_file : str, num_parallel_jobs : Unio
         write_to_textfile(tfile, subjects_file_lines)
         current_idx = end_idx
 
-    logger.info(f"All {len(num_subjects_per_job)} files written.")
+    logger.info(f"All {len(subjects_per_job)} files written.")
 
-    return len(num_subjects_per_job)
+    return len(subjects_per_job)
 
 
 def write_to_textfile(filepath : str, contents : str) -> None:
@@ -123,7 +122,7 @@ if __name__ == "__main__":
     if os.path.isfile(f"subjects_job{num_files}.txt"):
         logger.warning(f"WARNING: Wrote {num_files} subjects files (subjects_job0.txt .. subjects_job{num_files -1}.txt), but the file 'subjects_job{num_files}.txt' also exists, maybe from an older run?")
         logger.warning(f"WARNING (cont.): You may want to delete old 'subjects_job*' files before a run to avoid confusion.")
-    logger.warning(f"Please set the number of jobs in the submit.sh script (in the 'SBATCH --array' line) to {num_files}.")
+    logger.warning(f"Please set the number of jobs in the submit.sh script (in the 'SBATCH --array' line) to 0-{num_files-1}.")
 
 
 

@@ -33,7 +33,7 @@ do_run_part3_in_parallel="YES" # Whether to use highly parallel version for part
 nodes=44                      # The number of CPU cores to use. Adapt to your machine.
 
 ## The following settings are used in part3 only, you can ignore them if you do not run that part.
-python2_command="python2"     # The command that calles a python2 interpreter (not python3, which is often what the command 'python' points to on modern systems).
+python2_command="python2"     # The command that calls a python2 interpreter (not python3, which is often what the command 'python' points to on modern systems).
 measures="thickness"          # <=== Adapt this. Can be a list, e.g., measures="thickness area volume".
 
 
@@ -83,7 +83,7 @@ if [ "$do_run_part1" = "YES" -o "$do_run_part2" = "YES" ]; then
           sjd="${SUBJECTS_DIR}/${subject}"
           if [ ! -d "$sjd" ]; then
               echo "$apptag ERROR: The directory for subject $subject does not exist at expected path '$sjd'. Please check your subjects file."
-              exit 0
+              exit 1
           fi
       done
   fi
@@ -134,18 +134,18 @@ fi
 ############################## Part III ########################################
 ################################################################################
 
-## Produces the slopes for your measureof interest(e.g., cortical thickness) between the timepoints.
+## Produces the slopes for your measure of interest (e.g., cortical thickness) between the timepoints.
 ## This requires the file 'long.qdec.table.dat', which you will need to create based on the subject demographics (inter-scan period, etc). There is an
 ##  R function in the 'fsbrain' R package that can make it a lot easier (and less error-prone) to create that file. The function is: fsbrain::demographics.to.qdec.table.dat()
 ##
 ## See https://surfer.nmr.mgh.harvard.edu/fswiki/LongitudinalTwoStageModel for information on the table. That table
-##  a space-separated, CSV-like text file with columns 'fsid', 'fsid-base' and 'year'. E.g., the first 5 lines could look like (without the bash comment signs '##' at the start):
+##  a space-separated, CSV-like text file with columns 'fsid', 'fsid-base' and 'years'. E.g., the first 5 lines could look like (without the bash comment signs '##' at the start):
 ##
-## fsid fsid-base year
+## fsid fsid-base years
 ## OAS2_0001_MR1 OAS2_0001 0
 ## OAS2_0001_MR2 OAS2_0001 1.25
-## OAS2_0002_MR1 OAS2_0001 0
-## OAS2_0002_MR2 OAS2_0001 1.75
+## OAS2_0002_MR1 OAS2_0002 0
+## OAS2_0002_MR2 OAS2_0002 1.75
 ##
 ## More columns are allowed, but these columns (in that order!) must appear first with EXACTLY the column names given above.
 ##
@@ -164,7 +164,7 @@ if [ "${do_run_part3}" = "YES" ]; then
     #long_mris_slopes_command="long_mris_slopes"
     if [ -z "$FREESURFER_HOME" ]; then
       echo "$apptag Env var FREESURFER_HOME not set, please setup FreeSurfer properly."
-      exit 0
+      exit 1
     fi
     long_mris_slopes_bin="${FREESURFER_HOME}/bin/long_mris_slopes" # The full path to the 'long_mris_slopes' program that comes with FreeSurfer. If FreeSurfer is setup correctly for the bash shell on your system, you do not need to change anything.
     long_mris_slopes_command="${python2_command} ${long_mris_slopes_bin}"   # Typically evaluates to something like: python2 ${FREESURFER_HOME}/bin/long_mris_slopes
@@ -172,7 +172,7 @@ if [ "${do_run_part3}" = "YES" ]; then
 
     echo "$apptag  Running part III: Computing slopes of measure data ($measures)."
     qdec_file_time_column="years" # This is the name of the inter-scan time column in the QDEC file. The unit is up to you, it depends on what you want to measure.
-    ## ...                         Yearly change seems reasonable, so we assume inter-scan time is given in years by default, and listed in a column named 'year', as in the example above.
+    ## ...                         Yearly change seems reasonable, so we assume inter-scan time is given in years by default, and listed in a column named 'years', as in the example above.
 
     if [ -f "${qdec_file}" ]; then
 
@@ -192,13 +192,13 @@ if [ "${do_run_part3}" = "YES" ]; then
             for hemi in lh rh; do
                 input_file_MR1="${sjd_MR1_surf}/${hemi}.${measure}"
                 if [ ! -f "$input_file_MR1" ]; then
-                    echo "$APPTAG ERROR: Subject $subject does not even have the expected $hemi hemi measure $measure MR1 input file '$input_file_MR1' for computing slopes."
+                    echo "$apptag ERROR: Subject $subject does not even have the expected $hemi hemi measure $measure MR1 input file '$input_file_MR1' for computing slopes."
                     has_errors="yes"
                     subject_has_errors="yes"
                 fi
                 input_file_MR2="${sjd_MR2_surf}/${hemi}.${measure}"
                 if [ ! -f "$input_file_MR2" ]; then
-                    echo "$APPTAG ERROR: Subject $subject does not even have the expected $hemi hemi measure $measure MR2 input file '$input_file_MR2' for computing slopes."
+                    echo "$apptag ERROR: Subject $subject does not even have the expected $hemi hemi measure $measure MR2 input file '$input_file_MR2' for computing slopes."
                     has_errors="yes"
                     subject_has_errors="yes"
                 fi
@@ -254,7 +254,7 @@ if [ "${do_run_part3}" = "YES" ]; then
     else
         echo "$apptag ERROR: The QDEC table file '${qdec_file}' does not exist or cannot be read: cannot produce measure data. Please create it and manually re-run step III of the script only."
         echo "$apptag Note: one can use the fsbrain R package to create the file from a demographics data.frame, see functions qdec.table.skeleton() and demographics.to.qdec.table.dat()."
-        exit 0
+        exit 1
     fi
 
 else
@@ -262,4 +262,4 @@ else
 fi
 
 
-exit 1
+exit 0

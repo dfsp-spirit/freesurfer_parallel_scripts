@@ -1,7 +1,7 @@
 #!/bin/bash
 # parallel_gen_mid_surface.bash -- compute mid surface (50% thickness between white and pial) in parallel over a number of subjects.
 #
-# HOW TO TO USE THIS script
+# HOW TO USE THIS script
 #  1) Copy it wherever you like and make sure it is executable (run `chmod +x parallel_gen_mid_surface.bash`)
 #  2) Set your SUBJECTS_DIR environment variable and change into your SUBJECTS_DIR. You should have a subjects.txt file in there.
 #  3) Run: `path/to/parallel_gen_mid_surface.bash subjects.txt`
@@ -36,7 +36,13 @@ fi
 
 ## check some stuff
 if [ -z "${SUBJECTS_DIR}" ]; then
-    echo "$APPTAG WARNING: Environment variable SUBJECTS_DIR not set."
+    echo "$APPTAG ERROR: Environment variable SUBJECTS_DIR not set. Exiting."
+    exit 1
+fi
+
+if [ ! -f "${FREESURFER_HOME}/license.txt" ]; then
+    echo "$APPTAG FreeSurfer license.txt file not found (or FREESURFER_HOME environment variable not set properly). Run would fail, exiting."
+    exit 1
 fi
 
 if [ -d "${SUBJECTS_DIR}/bert" ]; then
@@ -82,4 +88,4 @@ if [ ! -x "${CARGO_SCRIPT}" ]; then
 fi
 
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_MAP_PARALLEL_MIDSURF_${DATE_TAG}.txt "${CARGO_SCRIPT} {}"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_PARALLEL_MIDSURF_${DATE_TAG}.txt "${CARGO_SCRIPT} {}"

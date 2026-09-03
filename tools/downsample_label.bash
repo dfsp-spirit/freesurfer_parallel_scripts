@@ -2,7 +2,7 @@
 # downsample a label, e.g., downsample lh.cortex.label (ico7) to lh.cortex6.label (ico6) for a subject.
 # The downsampled label can be used to find the cortical vertices (as opposed to the medial wall) for a subject on its ico6 surface.
 #
-# Usage: bash downsample_label.bash
+# Usage: bash downsample_label.bash <subject> [<label> [<ico_order>]]
 #
 # IMPORTANT: Run this in your recon-all output dir, the SUBJECTS_DIR.
 
@@ -25,7 +25,7 @@ if [ -n "$3" ]; then
     ICO_ORDER=$3
 fi
 
-export SUBJECTS_DIR=$(pwd)
+export SUBJECTS_DIR="${SUBJECTS_DIR:-$(pwd)}"
 
 if [ ! -d "${SUBJECT}" ]; then
     echo "${APPTAG} ERROR: Directory '${SUBJECT}' not found. Please run this script from the directory it is stored in."

@@ -13,7 +13,7 @@
 #   screen -S lgi_mydataset
 #   cd data/lgi_mydataset
 #   export SUBJECTS_DIR=$(pwd)
-#   /path/to/this/script/parallel_lgi_native.bash subjects.txt
+#   /path/to/this/script/parallel_lgi_native_longitudinal.bash subjects.txt
 #
 #   Then detach the screen session:
 #     C-a d
@@ -59,7 +59,7 @@ if [ -d "${SUBJECTS_DIR}/bert" ]; then
 fi
 
 if [ ! -f "${FREESURFER_HOME}/license.txt" ]; then
-    echo "$APPTAG FreeSurfer license.txt file ńot found (or FREESURFER_HOME environment variable not set properly). RUn would fail, exiting."
+    echo "$APPTAG FreeSurfer license.txt file not found (or FREESURFER_HOME environment variable not set properly). Run would fail, exiting."
     exit 1
 fi
 
@@ -72,8 +72,13 @@ if [ -n "$1" ]; then
     fi
 else
     echo "$APPTAG ERROR: Must specify subjects_file. Exiting."
-    echo "$APPTAG Usage: $0 <subjects_file>"
+    echo "$APPTAG Usage: $0 <subjects_file> [<num_cores>]"
     exit 1
+fi
+
+
+if [ -n "$2" ]; then
+    NUM_PARALLEL_JOBS=$2
 fi
 
 
@@ -116,7 +121,7 @@ fi
 
 #echo ${SUBJECTS} | tr ' ' '\n' | parallel "echo {}"            # Debug: This only print one subject per line.
 
-## The full command that will be run for each subject. The {} will be replaced by the subject id. You could get additional args from whereever and add them (e.g., from $2 .. $n of this script. Keep in mind that $1 is already in use!).
+## The full command that will be run for each subject. The {} will be replaced by the subject id. You could get additional args from wherever and add them (e.g., from $2 .. $n of this script. Keep in mind that $1 is already in use!).
 
 
 ## A simple example for a command.

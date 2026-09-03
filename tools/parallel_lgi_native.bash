@@ -59,7 +59,7 @@ if [ -d "${SUBJECTS_DIR}/bert" ]; then
 fi
 
 if [ ! -f "${FREESURFER_HOME}/license.txt" ]; then
-    echo "$APPTAG FreeSurfer license.txt file ńot found (or FREESURFER_HOME environment variable not set properly). RUn would fail, exiting."
+    echo "$APPTAG FreeSurfer license.txt file not found (or FREESURFER_HOME environment variable not set properly). Run would fail, exiting."
     exit 1
 fi
 
@@ -83,7 +83,7 @@ if [ -n "$2" ]; then
     NUM_PARALLEL_JOBS=$2
 fi
 
-echo "$APPTAG Running $NUM_PARALLEL_JOBS is parallel."
+echo "$APPTAG Running $NUM_PARALLEL_JOBS jobs in parallel."
 
 
 SUBJECTS=$(cat "${SUBJECTS_FILE}" | tr '\n' ' ')

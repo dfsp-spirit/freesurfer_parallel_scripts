@@ -23,9 +23,9 @@ DO_KEEP_EXISTING_SUBJECTS_FILE="yes"                      # Whether to keep an e
 DO_RUN_RECON_ALL="yes"                                    # This will run FreeSurfer. Takes several hours per subject, depending on your hardware. Assume roughly 12h for 2018 hardware.
 DO_CHECK_FOR_COMPLETION="no"
 FINISH_NOTIFICATION_EMAIL_ADDRESS="none"                  # set to "none" if you do not want an email. Using this requires a working sendmail/MX setup on the workstation.
-NUM_CORES_TO_USE=47                                       # Should be slighly *below* total core count. If you use all, it will be a pain to anything on the machine while this runs. Leave 1 or 2 cores alone.
+NUM_CORES_TO_USE=47                                       # Should be slightly *below* total core count. If you use all, it will be a pain to anything on the machine while this runs. Leave 1 or 2 cores alone.
 SUBJECTS_FILE="subjects.txt"                              # name of subjects file that will be generated (and used) by this script
-SCRIPT_FOR_SINGLE_SUBJECT="preproc_reconall_single_subject.bash"   # Only the file name, the full path to thisis derived exec path of this script (i.e., it must be in the same dir as this script, no matter where this script is called from).
+SCRIPT_FOR_SINGLE_SUBJECT="preproc_reconall_single_subject.bash"   # Only the file name, the full path to this is derived from the exec path of this script (i.e., it must be in the same dir as this script, no matter where this script is called from).
 
 ## End of settings. Do not mess with stuff below unless you know what you are doing.
 
@@ -36,9 +36,9 @@ MODE=$1
 if [ -z $MODE ]; then
     NUM_SYS_CORES=$(getconf _NPROCESSORS_ONLN)
     echo "$APPTAG preproc_reconall_parallel -- Run FreeSurfer Pre-processing in parallel over many subjects"
-    echo "$APPTAG USAGE: $0 <mode> [<num_cpu> [<email>] [<subjects_file>]]]"
+    echo "$APPTAG USAGE: $0 <mode> [<num_cpu> [<email>] [<subjects_file>]]"
     echo "$APPTAG     <mode>    : One of 'fsdir', 'recon', 'fsdir+recon' or 'status'."
-    echo "$APPTAG     <num_cpu> : Number of CPUs to use for parallel, optional. Put the number of cores your machine has minus one. Defaults to 20 if omitted. Note: This system seems to have ${NUM_SYS_CORES} cores."
+    echo "$APPTAG     <num_cpu> : Number of CPUs to use for parallel, optional. Put the number of cores your machine has minus one. Defaults to ${NUM_CORES_TO_USE} if omitted. Note: This system seems to have ${NUM_SYS_CORES} cores."
     echo "$APPTAG     <email>   : Email to notify when recon-all completed, optional. Requires working sendmail setup. Ignored in all modes which do not include 'recon'. Supply 'none' if you dont want emails."
     echo "$APPTAG     <subjects_file> : custom subjects file name to use. Optional. Will be created based on dir contents if it does not exist yet."
     echo "$APPTAG EXAMPLES"
@@ -88,7 +88,7 @@ else
     fi
 
     if [ $MODE = "recon" -o $MODE = "fsdir+recon" ]; then
-        if [ -n ${FINISH_NOTIFICATION_EMAIL_ADDRESS} ]; then
+        if [ -n "${FINISH_NOTIFICATION_EMAIL_ADDRESS}" ]; then
             echo "$APPTAG Will send email to ${FINISH_NOTIFICATION_EMAIL_ADDRESS} once recon-all finished."
         else
             echo "$APPTAG Not sending any notification email, no e-mail address given."
@@ -114,11 +114,11 @@ fi
 ## Create FreeSurfer Directory Structure
 if [ ${DO_CREATE_FREESURFER_DIR_STRUCTURE} = "yes" ]; then
     if [ ${NUM_NII_FILES} -lt 1 ]; then
-        echo "$APPTAG ERROR: No niftii files found, cannot create directory structure. Exiting."
+        echo "$APPTAG ERROR: No nifti files found, cannot create directory structure. Exiting."
         exit 1
     fi
-    echo "$APPTAG Creating FreeSurfer directory structure for $NUM_NII_FILES detected niftii files."
-	ls *.nii | parallel -S $NUM_CORES_TO_USE/: "recon-all -sd `pwd` -i {} -s {.}"
+    echo "$APPTAG Creating FreeSurfer directory structure for $NUM_NII_FILES detected nifti files."
+	ls *.nii | parallel --jobs ${NUM_CORES_TO_USE} "recon-all -sd `pwd` -i {} -s {.}"
 else
     echo "$APPTAG NOT creating dir structure."
 fi
@@ -174,7 +174,7 @@ if [ "${DO_RUN_RECON_ALL}" = "yes" ]; then
         fi
     done
 
-	cat ${SUBJECTS_FILE} | parallel --workdir . --joblog LOGFILE.txt "$PATH_TO_SSCRIPT {}"
+	cat ${SUBJECTS_FILE} | parallel --jobs ${NUM_CORES_TO_USE} --workdir . --joblog LOGFILE.txt "$PATH_TO_SSCRIPT {}"
 
     if [ -n "${FINISH_NOTIFICATION_EMAIL_ADDRESS}" -a "${FINISH_NOTIFICATION_EMAIL_ADDRESS}" != "none"  ]; then
 

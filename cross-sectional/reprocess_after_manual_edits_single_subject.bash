@@ -11,16 +11,16 @@ SUBJECT_ID="$1"
 
 if [ -z "${SUBJECT_ID}" ]; then
     echo "USAGE: $0 <subject_id>"
-    echo " <subject_id>: str, the subject directory name afte edits, must end with '_gm' or '_wm'."
+    echo " <subject_id>: str, the subject directory name after edits, must end with '_gm' or '_wm'."
     echo "Note: The SUBJECTS_DIR environment variable must be set properly."
     echo "      SUBJECTS_DIR currently points at '$SUBJECTS_DIR'."
     exit 1
 fi
 
-if [[ "${SUBJECT_ID}" == "*gm" ]]; then
+if [[ "${SUBJECT_ID}" == *_gm ]]; then
     echo "$APPTAG Reprocessing subject $SUBJECT_ID after only gray matter edits..."
     recon-all -autorecon-pial -sd `pwd` -subjid $SUBJECT_ID -no-isrunning && recon-all -sd "${SUBJECTS_DIR}" -subjid $SUBJECT_ID -qcache
-elif [[ "${SUBJECT_ID}" == "*wm" ]]; then
+elif [[ "${SUBJECT_ID}" == *_wm ]]; then
     echo "$APPTAG Reprocessing subject $SUBJECT_ID after white matter edits..."
     recon-all -autorecon2-wm -autorecon3 -sd `pwd` -subjid $SUBJECT_ID -no-isrunning && recon-all -sd "${SUBJECTS_DIR}" -subjid $SUBJECT_ID -qcache
 else

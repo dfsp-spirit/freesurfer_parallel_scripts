@@ -9,10 +9,10 @@
 # Written by Tim.
 #
 # I would recommend to run this from a `screen` session:
-#   screen -S lgi_mydataset
-#   cd data/lgi_mydataset
+#   screen -S downsample_mydataset
+#   cd data/downsample_mydataset
 #   export SUBJECTS_DIR=$(pwd)
-#   /path/to/this/script/parallel_lgi_native.bash subjects.txt
+#   /path/to/this/script/parallel_downsample_mesh.bash subjects.txt
 #
 #   Then detach the screen session:
 #     C-a d
@@ -57,7 +57,7 @@ if [ -d "${SUBJECTS_DIR}/bert" ]; then
 fi
 
 if [ ! -f "${FREESURFER_HOME}/license.txt" ]; then
-    echo "$APPTAG FreeSurfer license.txt file ńot found (or FREESURFER_HOME environment variable not set properly). RUn would fail, exiting."
+    echo "$APPTAG FreeSurfer license.txt file not found (or FREESURFER_HOME environment variable not set properly). Run would fail, exiting."
     exit 1
 fi
 
@@ -70,7 +70,10 @@ if [ -n "$1" ]; then
     fi
 else
     echo "$APPTAG ERROR: Must specify subjects_file. Exiting."
-    echo "$APPTAG Usage: $0 <subjects_file> <job_arg1>..."
+    echo "$APPTAG Usage: $0 <subjects_file> [<target_template> <trgicoorder>]"
+    echo "$APPTAG    <subjects_file>   : path to text file with one subject ID per line."
+    echo "$APPTAG    <target_template> : optional, template subject. Defaults to 'fsaverage6' (see downsample_mesh_subject.bash)."
+    echo "$APPTAG    <trgicoorder>     : optional, triangle ico order for the template (6, 5, 4, or 3). Must be given if <target_template> is given."
     exit 1
 fi
 
@@ -99,7 +102,7 @@ done
 
 #echo ${SUBJECTS} | tr ' ' '\n' | parallel "echo {}"            # Debug: This only print one subject per line.
 
-## The full command that will be run for each subject. The {} will be replaced by the subject id. You could get additional args from whereever and add them (e.g., from $2 .. $n of this script. Keep in mind that $1 is already in use!).
+## The full command that will be run for each subject. The {} will be replaced by the subject id. The optional <target_template> and <trgicoorder> are forwarded to the cargo script as extra arguments.
 
 
 EXEC_PATH_OF_THIS_SCRIPT=$(dirname $0)
@@ -112,4 +115,4 @@ fi
 
 ############ execution, no need to mess with this. ############
 DATE_TAG=$(date '+%Y-%m-%d_%H-%M-%S')
-echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_PARALLEL_DOWNSAMPLE_MESH_${DATE_TAG}.txt "$CARGO_SCRIPT {}"
+echo ${SUBJECTS} | tr ' ' '\n' | parallel --jobs ${NUM_PARALLEL_JOBS} --workdir . --joblog LOGFILE_PARALLEL_DOWNSAMPLE_MESH_${DATE_TAG}.txt "$CARGO_SCRIPT {} $2 $3"

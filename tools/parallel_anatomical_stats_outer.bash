@@ -1,7 +1,7 @@
 #!/bin/bash
 # parallel_anatomical_stats_outer.bash -- compute anatomical stats in parallel over a number of subjects.
 #
-# HOW TO TO USE THIS script
+# HOW TO USE THIS script
 #  1) Copy it wherever you like and make sure it is executable
 #  2) Set your SUBJECTS_DIR environment variable and change into your SUBJECTS_DIR. You should have a subjects.txt file in there.
 #  3) Run: `path/to/parallel_anatomical_stats_outer.bash subjects.txt`
@@ -40,7 +40,13 @@ fi
 
 ## check some stuff
 if [ -z "${SUBJECTS_DIR}" ]; then
-    echo "$APPTAG WARNING: Environment variable SUBJECTS_DIR not set."
+    echo "$APPTAG ERROR: Environment variable SUBJECTS_DIR not set. Exiting."
+    exit 1
+fi
+
+if [ ! -f "${FREESURFER_HOME}/license.txt" ]; then
+    echo "$APPTAG FreeSurfer license.txt file not found (or FREESURFER_HOME environment variable not set properly). Run would fail, exiting."
+    exit 1
 fi
 
 if [ -d "${SUBJECTS_DIR}/bert" ]; then

@@ -13,7 +13,7 @@ SCRIPT_FOR_SINGLE_SUBJECT="reprocess_after_manual_edits_single_subject.bash"
 SUBJECTS_FILE=$1
 if [ -z "$SUBJECTS_FILE" ]; then                              # name of subjects file that will be generated (and used) by this script
   echo "USAGE: $0 <subjects_file> [<num_cores>]"
-  echo " <subjects_files>: str, path to text file containing one subject dir name after edits per line."
+  echo " <subjects_file>: str, path to text file containing one subject dir name after edits per line."
   echo "                   I.e., the names must end with '_gm' or '_wm'. Other subjects will be ignored."
   echo "Note: The SUBJECTS_DIR environment variable must also be set properly."
   echo "      SUBJECTS_DIR currently points at '$SUBJECTS_DIR'."
@@ -43,8 +43,8 @@ echo "$APPTAG Running recon-all reprocessing after edits in parallel for ${NUM_S
 
 SUBJECTS=$(cat ${SUBJECTS_FILE} | tr '\n' ' ')
 
-num_subects_will_be_handled=0
-num_subects_will_be_skipped=0
+num_subjects_will_be_handled=0
+num_subjects_will_be_skipped=0
 
 # Some sanity checks.
 for SUBJECT_ID in $SUBJECTS; do
@@ -54,19 +54,20 @@ for SUBJECT_ID in $SUBJECTS; do
         exit 1
     fi
     # Check whether subject names have the correct patterns.
-    if [[ "${SUBJECT_ID}" == "*gm" -o "${SUBJECT_ID}" == "*wm" ]]; then
-        num_subects_will_be_handled=$((num_subects_will_be_handled+1))
+    if [[ "${SUBJECT_ID}" == *_gm || "${SUBJECT_ID}" == *_wm ]]; then
+        num_subjects_will_be_handled=$((num_subjects_will_be_handled+1))
     else
-        num_subects_will_be_skipped=$((num_subects_will_be_skipped+1))
+        num_subjects_will_be_skipped=$((num_subjects_will_be_skipped+1))
         echo "$APPTAG WARNING: Subject '${SUBJECT_ID}' does not follow naming convention ('_gm' / '_wm' suffix) and will be skipped."
     fi
 done
 
-if [ $num_subects_will_be_handled -eq 0 ]; then
+if [ $num_subjects_will_be_handled -eq 0 ]; then
     echo "$APPTAG None of the $NUM_SUBJECTS subjects in the subjects file adhere to the required naming convention ('_gm' / '_wm' suffix). Would not do anything. Stopping now."
+    exit 1
 fi
 
-echo "$APPTAG Out of the $NUM_SUBJECTS subjects in the subjects file, $num_subects_will_be_handled will be re-processed and $num_subects_will_be_skipped will be ignored because they do not adhere to the required naming convention ('_gm' / '_wm' suffix)."
+echo "$APPTAG Out of the $NUM_SUBJECTS subjects in the subjects file, $num_subjects_will_be_handled will be re-processed and $num_subjects_will_be_skipped will be ignored because they do not adhere to the required naming convention ('_gm' / '_wm' suffix)."
 
 EXEC_PATH_OF_THIS_SCRIPT=$(dirname $0)
 PATH_TO_SSCRIPT="$EXEC_PATH_OF_THIS_SCRIPT/$SCRIPT_FOR_SINGLE_SUBJECT"
@@ -75,4 +76,4 @@ if [ ! -f "$PATH_TO_SSCRIPT" ]; then
     exit 1
 fi
 
-cat ${SUBJECTS_FILE} | parallel --workdir . --joblog LOGFILE_REPROCESS_AFTER_EDITS.txt "$PATH_TO_SSCRIPT {}"
+cat ${SUBJECTS_FILE} | parallel --jobs ${NUM_CORES_TO_USE} --workdir . --joblog LOGFILE_REPROCESS_AFTER_EDITS.txt "$PATH_TO_SSCRIPT {}"

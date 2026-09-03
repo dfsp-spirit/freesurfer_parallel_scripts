@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# qdec_get_subjects.bash -- List all subject IDs contained in a QDEC longitudinal table.
+# qdec_list_subjects.bash -- List all subject IDs contained in a QDEC longitudinal table.
 #
 # Notes:
 # * This script assumes that in the intput QDEC file, the different time points
@@ -15,11 +15,11 @@ if [ -z "$qdec_file" ]; then
   echo "USAGE: $0 <qdec_long_file>"
   echo "  <qdec_long_file> : path to a FreeSurfer QDEC longitudinal table (.dat) file."
   echo "Note: You can get subjects separated by newlines instead of spaces by piping the"
-  echo "      ouput of this command to tr, e.g.: $0 qdec.table.dat | tr ' ' '\n'"
-  exit 0
+  echo "      output of this command to tr, e.g.: $0 qdec.table.dat | tr ' ' '\n'"
+  exit 1
 fi
 
-if [ ! -z "$2" ]; then
+if [ -n "$2" ]; then
   >&2 echo "WARNING: Command line arguments after 1st one ignored."
 fi
 

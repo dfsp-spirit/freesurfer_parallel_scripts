@@ -31,7 +31,7 @@ if [ -n "${FLAIR_FILE_PATH}" ]; then
 fi
 
 if [ -n "${TSE_FILE_PATH}" ]; then
-    if [ -z "TSE_OPTIONS" ]; then  # if this is not empty anymore, a FLAIR image is available, and we want to use that instread of the T2.
+    if [ -z "$TSE_OPTIONS" ]; then  # if this is not empty anymore, a FLAIR image is available, and we want to use that instead of the T2.
         if [ -f "${TSE_FILE_PATH}" ]; then
             TSE_OPTIONS="-T2 ${TSE_FILE_PATH} -T2pial"
         else

@@ -8,8 +8,9 @@ if [ -z "$subject_id" ]; then
   echo "Usage: $0 <subject_id> [<target_template> <trgicoorder>]"
   echo "  <subject_id>: char, the subject directory name."
   echo "  <target_template>: optional. char, the template subject. Defaults to 'fsaverage6'."
-  echo "  <trgicoorder>: optional. int, the triaangle ico order for the target_template. Defaults to 6. Must be given for non-standard target_template."
+  echo "  <trgicoorder>: optional. int, the triangle ico order for the target_template. Defaults to 6. Must be given for non-standard target_template."
   echo " Hint: the <trgicoorder> is 7 for fsaverage, 6 for fsaverage6, 5 for fsaverage5, and so on."
+  echo " Note: The SUBJECTS_DIR environment variable must be set correctly (the subject and template are looked up in it)."
   exit 1
 fi
 

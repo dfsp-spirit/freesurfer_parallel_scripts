@@ -1,4 +1,4 @@
-#!/usr/bin/which python
+#!/usr/bin/env python
 #
 # This script computes the md5sum of all relevant files in a FreeSurfer subject directory.
 # It also allows to copy the files to a specified directory.
@@ -99,7 +99,7 @@ def subject_files_md5():
     import argparse
     parser = argparse.ArgumentParser(description='Compute md5sum of all relevant subject files')
     parser.add_argument('subject_dir', type=str, help='Path to the subject directory (<SUBJECTS_DIR>/<your_subject>).')
-    parser.add_argument('--print', type=str, help='What to print, one of "md5", "md5R", "fullpath", "innerpath", "innerpathR" "Rpath", "full_with_md5", or "all". Defaults to "full_with_md5".', default="full_with_md5")
+    parser.add_argument('--print', type=str, help='What to print, one of "md5", "md5R", "fullpath", "innerpath", "innerpathR", "Rpath", "full_with_md5", or "all". Defaults to "full_with_md5".', default="full_with_md5")
     parser.add_argument('--copy', type=str, help='Optional, a directory where to copy the files for which md5sums were computed. Must exist and be writable. Omit if you do not want to copy.')
     args = parser.parse_args()
 

@@ -8,7 +8,7 @@
 #
 # Usage: path/to/get_stats_tables.bash <subjects_dir> <subjects_file>
 #
-# One dies not need to export env var for subjects dir, this script does it.
+# One does not need to export env var for subjects dir, this script does it.
 
 
 
@@ -21,6 +21,7 @@ measures="thickness area volume"   # the per-vertex descriptor files to use (aka
 
 ### End of Settings ###
 
+apptag="[GET_STATS_TBL]"
 
 
 # auto-detect FS6 vs FS7.
@@ -35,8 +36,6 @@ else
     is_fs7="yes"
 fi
 
-
-apptag="[GET_STATS_TBL]"
 
 if [ "$is_fs7" = "yes" ]; then
   echo "$apptag Assuming FreeSurfer v7 from auto-detection. Please overwrite setting 'is_fs7' manually if this is incorrect. If you are using FreeSurfer 6.x or below, this script will fail later."
@@ -105,7 +104,7 @@ for hemi in lh rh; do
     echo "$apptag Handling hemisphere $hemi."
     for measure in $measures; do # Feel free to add more measures here, see the help of aparcstats2table for options.
         aparc_output_table="${hemi}.${atlas}_table_${measure}.tsv"
-	# You many want to add more command line options to the call in the next line. E.g., '--skip' or '--common-parcs' may come in handy.
+	# You may want to add more command line options to the call in the next line. E.g., '--skip' or '--common-parcs' may come in handy.
         if [ "$is_fs7" = "yes" ]; then
             $aparcstats2table_bin --subjectsfile $subjects_file --parc $atlas --meas $measure --hemi $hemi -t $aparc_output_table && echo " * output file '$aparc_output_table' written."
         else
@@ -119,7 +118,7 @@ for hemi in lh rh; do
 	    if [ "$is_fs7" = "yes" ]; then
 	        $asegstats2table_bin --subjectsfile $subjects_file --parc $atlas -t $aseg_output_table && echo " * output file '$aseg_output_table' written."
 	    else
-        	$python2_bin $asegstats2table_bin --subjectsfile --parc $atlas $subjects_file -t $aseg_output_table && echo " * output file '$aseg_output_table' written."
+        	$python2_bin $asegstats2table_bin --subjectsfile $subjects_file --parc $atlas -t $aseg_output_table && echo " * output file '$aseg_output_table' written."
 	    fi
     fi
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  ExtractTotalBrainMeasuresTS.bash -- parse brain measures for all subjects listed in a file from their respective FreeSurfer output and concatinate it into a single file.
+#  ExtractTotalBrainMeasuresTS.bash -- parse brain measures for all subjects listed in a file from their respective FreeSurfer output and concatenate it into a single file.
 #
 #  The former tcsh version was created by Christine Ecker on 07/04/2014.
 #  Extended by Tim Schäfer on 2018/06/14. Changes:
@@ -87,7 +87,7 @@ if [ -f "$TMP_FILE" ]; then
     rm "$TMP_FILE"
 fi
 
-# Check for borken line endings (Windows line endings, '\r\n') in subjects.txt file, a very common error.
+# Check for broken line endings (Windows line endings, '\r\n') in subjects.txt file, a very common error.
 # This script can cope with these line endings, but we still warn the user because other scripts may choke on them.
 NUM_BROKEN_LINE_ENDINGS=$(grep -U $'\015' "${SUBJECTS_FILE}" | wc -l | tr -d '[:space:]')
 if [ $NUM_BROKEN_LINE_ENDINGS -gt 0 ]; then
@@ -111,7 +111,7 @@ echo "$APPTAG Output file: $OUTPUT_FILE"
 # some files if we wait.
 
 ### Function to check for missing files. USAGE: subject_has_missing_files <subject> <include_pial>
-### IMPORTATNT: For the return value, you have to check the exit status, ?$
+### IMPORTANT: For the return value, you have to check the exit status, $?
 subject_has_missing_files () {
       subject=$1
       INCLUDE_PIAL=$2
@@ -161,10 +161,10 @@ done
 
 if [ ${NUM_SUBJECTS_MISSING_FILES} -gt 0 ]; then
     if [ "$EXIT_ON_MISSING_DATA" = "yes" ]; then
-        echo "$APPTAG ERROR: $NUM_SUBJECTS_MISSING_FILES subjects are is missing files (see above). Cannot compute brainstats. Exiting (see setting EXIT_ON_MISSING_DATA)."
+        echo "$APPTAG ERROR: $NUM_SUBJECTS_MISSING_FILES subjects are missing files (see above). Cannot compute brainstats. Exiting (see setting EXIT_ON_MISSING_DATA)."
         exit 1
     else
-        echo "$APPTAG WARNING: $NUM_SUBJECTS_MISSING_FILES subjects are is missing files (see above). Their values will be NA in the results."
+        echo "$APPTAG WARNING: $NUM_SUBJECTS_MISSING_FILES subjects are missing files (see above). Their values will be NA in the results."
     fi
 fi
 
@@ -175,7 +175,7 @@ do
     NUM_MISSING_FILES_THIS_SUBJECT=$?
     if [ ${NUM_MISSING_FILES_THIS_SUBJECT} -gt 0 ]; then
         if [ "$EXIT_ON_MISSING_DATA" = "yes" ]; then
-            echo "$APPTAG ERROR: subject '$subject' is missing files, exiting. This should habve been detected earlier, and the script should have aborted already. Fix this bug!"
+            echo "$APPTAG ERROR: subject '$subject' is missing files, exiting. This should have been detected earlier, and the script should have aborted already. Fix this bug!"
             exit 1
         else
             echo "$APPTAG NOTICE: Subject '$subject' is missing required data files, writing NA values to results."
@@ -200,41 +200,41 @@ do
     CURRENT_SUBJECT_NUM=$((CURRENT_SUBJECT_NUM + 1))
     echo "$APPTAG +++++ Starting to work on subject '$subject' ($CURRENT_SUBJECT_NUM of $NUM_SUBJECTS). +++++"
 
-    lhCortexVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep lhCortexVol | awk -F'[, \t]*' '{print $11}'`
+    lhCortexVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep lhCortexVol | awk -F'[, \t]*' '{print $11}'`
     echo "$APPTAG lhCortexVol: $lhCortexVol"
-    rhCortexVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep rhCortexVol | awk -F'[, \t]*' '{print $11}'`
+    rhCortexVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep rhCortexVol | awk -F'[, \t]*' '{print $11}'`
     echo "$APPTAG rhCortexVol: $rhCortexVol"
-    CortexVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep 'Total cortical gray matter volume' | awk -F'[, \t]*' '{print $10}'`
+    CortexVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep 'Total cortical gray matter volume' | awk -F'[, \t]*' '{print $10}'`
     echo "$APPTAG CortexVol: $CortexVol"
     if [ -z "$CortexVol" ]; then
-        echo "ERROR: Could not determine CortexVol (subject='${$subject}')."
+        echo "ERROR: Could not determine CortexVol (subject='${subject}')."
         exit 1
     fi
 
-    CerebralWhiteMatterVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep 'Total cerebral white matter volume' | awk -F'[, \t]*' '{print $10}'`
+    CerebralWhiteMatterVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep 'Total cerebral white matter volume' | awk -F'[, \t]*' '{print $10}'`
 
     if [ -z "$CerebralWhiteMatterVol" ]; then
         # aseg file from FreeSurfer 5, most likely.
-        CerebralWhiteMatterVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep 'Total cortical white matter volume' | awk -F'[, \t]*' '{print $10}'`
+        CerebralWhiteMatterVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep 'Total cortical white matter volume' | awk -F'[, \t]*' '{print $10}'`
         if [ -z "$CerebralWhiteMatterVol" ]; then
-            echo "ERROR: Could not determine white matter volume from ${SUBJECT_STATS_DIR}/aseg.stats (subject='${$subject}')"
+            echo "ERROR: Could not determine white matter volume from ${SUBJECT_STATS_DIR}/aseg.stats (subject='${subject}')"
             exit 1
         fi
     fi
 
     echo "$APPTAG CerebralWhiteMatter: $CerebralWhiteMatterVol"
 
-    TotalGray=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep TotalGray | awk -F'[, \t]*' '{print $9}'`
+    TotalGray=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep TotalGray | awk -F'[, \t]*' '{print $9}'`
     echo "$APPTAG TotalGray: $TotalGray"
-    SubCortGray=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep SubCortGray | awk -F'[, \t]*' '{print $9}'`
+    SubCortGray=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep SubCortGray | awk -F'[, \t]*' '{print $9}'`
     echo "$APPTAG SubCortGray: $SubCortGray"
 
-    EstimatedTotalIntraCranialVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep EstimatedTotalIntraCranialVol | awk -F'[, \t]*' '{print $9}'`
+    EstimatedTotalIntraCranialVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep EstimatedTotalIntraCranialVol | awk -F'[, \t]*' '{print $9}'`
     if [ -z "$EstimatedTotalIntraCranialVol" ]; then
         # aseg file from FreeSurfer 5, most likely.
-        EstimatedTotalIntraCranialVol=`more ${SUBJECT_STATS_DIR}/aseg.stats | grep 'IntraCranialVol' | awk -F'[, \t]*' '{print $7}'`
+        EstimatedTotalIntraCranialVol=`cat ${SUBJECT_STATS_DIR}/aseg.stats | grep 'IntraCranialVol' | awk -F'[, \t]*' '{print $7}'`
         if [ -z "$EstimatedTotalIntraCranialVol" ]; then
-            echo "ERROR: Could not determine total IntraCranial volume from ${SUBJECT_STATS_DIR}/aseg.stats (subject='${$subject}')"
+            echo "ERROR: Could not determine total IntraCranial volume from ${SUBJECT_STATS_DIR}/aseg.stats (subject='${subject}')"
             exit 1
         fi
     fi
@@ -242,28 +242,28 @@ do
     echo "$APPTAG EstimatedTotalIntraCranialVol: $EstimatedTotalIntraCranialVol"
 
     #using *h.aparc.stats
-    lhMeanThickness=`more ${SUBJECT_STATS_DIR}/lh.aparc.stats | grep MeanThickness | awk -F'[, \t]*' '{print $7}'`
+    lhMeanThickness=`cat ${SUBJECT_STATS_DIR}/lh.aparc.stats | grep MeanThickness | awk -F'[, \t]*' '{print $7}'`
     echo "$APPTAG lhMeanThickness: $lhMeanThickness"
-    rhMeanThickness=`more ${SUBJECT_STATS_DIR}/rh.aparc.stats | grep MeanThickness | awk -F'[, \t]*' '{print $7}'`
+    rhMeanThickness=`cat ${SUBJECT_STATS_DIR}/rh.aparc.stats | grep MeanThickness | awk -F'[, \t]*' '{print $7}'`
     echo "$APPTAG rhMeanThickness: $rhMeanThickness"
 
     #computed by: mris_anatomical_stats -l lh.cortex.label $subject lh white
-    lhWhiteSurfArea=`more ${SUBJECT_STATS_DIR}/lh.aparc.stats | grep WhiteSurfArea | awk -F'[, \t]*' '{print $9}'`
+    lhWhiteSurfArea=`cat ${SUBJECT_STATS_DIR}/lh.aparc.stats | grep WhiteSurfArea | awk -F'[, \t]*' '{print $9}'`
     echo "$APPTAG lhWhiteSurfArea: $lhWhiteSurfArea"
-    rhWhiteSurfArea=`more ${SUBJECT_STATS_DIR}/rh.aparc.stats | grep WhiteSurfArea | awk -F'[, \t]*' '{print $9}'`
+    rhWhiteSurfArea=`cat ${SUBJECT_STATS_DIR}/rh.aparc.stats | grep WhiteSurfArea | awk -F'[, \t]*' '{print $9}'`
     echo "$APPTAG rhWhiteSurfArea: $rhWhiteSurfArea"
 
     if [ "$INCLUDE_PIAL" = "yes" ]; then
         # pial area is not computed by default, we need to run mris_anatomical_stats ourselves and parse the output to get it.
         lhPialSurfArea=`mris_anatomical_stats -l lh.cortex.label $subject lh pial | grep 'total surface area' | awk '{print $5}'`
         if [ -z "$lhPialSurfArea" ]; then
-            echo "ERROR: Could not determine lh pial surface area of subject $subject by running mris_anatomical_stats. Please check for mris_anatomical_stats errors (subject='${$subject}')."
+            echo "ERROR: Could not determine lh pial surface area of subject $subject by running mris_anatomical_stats. Please check for mris_anatomical_stats errors (subject='${subject}')."
             exit 1
         fi
         echo "lhPialSurfArea: $lhPialSurfArea"
         rhPialSurfArea=`mris_anatomical_stats -l rh.cortex.label $subject rh pial | grep 'total surface area' | awk '{print $5}'`
         if [ -z "$rhPialSurfArea" ]; then
-            echo "ERROR: Could not determine rh pial surface area of subject $subject by running mris_anatomical_stats. Please check for mris_anatomical_stats errors. (subject='${$subject}')."
+            echo "ERROR: Could not determine rh pial surface area of subject $subject by running mris_anatomical_stats. Please check for mris_anatomical_stats errors. (subject='${subject}')."
             exit 1
         fi
         echo "$APPTAG rhPialSurfArea: $rhPialSurfArea"
@@ -272,7 +272,7 @@ do
         totalPialSurfArea=`echo "$lhPialSurfArea + $rhPialSurfArea" | bc -l`
         echo "$APPTAG totalPialSurfArea: $totalPialSurfArea"
         if [ -z "$totalPialSurfArea" ]; then
-            echo "ERROR: Could not determine totalPialSurfArea, computed from lhPialSurfArea = '${lhPialSurfArea}' and rhPialSurfArea = '${rhPialSurfArea}' (subject='${$subject}')."
+            echo "ERROR: Could not determine totalPialSurfArea, computed from lhPialSurfArea = '${lhPialSurfArea}' and rhPialSurfArea = '${rhPialSurfArea}' (subject='${subject}')."
             exit 1
         fi
     fi
@@ -280,20 +280,20 @@ do
     totalWhiteSurfArea=`echo "$lhWhiteSurfArea + $rhWhiteSurfArea" | bc -l`
     echo "$APPTAG totalWhiteSurfArea: $totalWhiteSurfArea"
     if [ -z "$totalWhiteSurfArea" ]; then
-        echo "ERROR: Could not determine totalWhiteSurfArea, computed from lhWhiteSurfArea = '${lhWhiteSurfArea}' and rhWhiteSurfArea = '${rhWhiteSurfArea}' (subject='${$subject}')."
+        echo "ERROR: Could not determine totalWhiteSurfArea, computed from lhWhiteSurfArea = '${lhWhiteSurfArea}' and rhWhiteSurfArea = '${rhWhiteSurfArea}' (subject='${subject}')."
         exit 1
     fi
     totalMeanCorticalThickness=`echo "scale=5;($lhMeanThickness + $rhMeanThickness) / 2" | bc -l`
     echo "$APPTAG totalMeanCorticalThickness: $totalMeanCorticalThickness"
     if [ -z "$totalMeanCorticalThickness" ]; then
-        echo "ERROR: Could not determine totalMeanCorticalThickness, computed from lhMeanThickness = '${lhMeanThickness}' and rhMeanThickness = '${rhMeanThickness}' (subject='${$subject}')."
+        echo "ERROR: Could not determine totalMeanCorticalThickness, computed from lhMeanThickness = '${lhMeanThickness}' and rhMeanThickness = '${rhMeanThickness}' (subject='${subject}')."
         exit 1
     fi
     totalBrainVolume=`echo "$CerebralWhiteMatterVol + $TotalGray" | bc -l`
     echo "$APPTAG CerebralWhiteMatterVol: $CerebralWhiteMatterVol TotalGray: $TotalGray"
     echo "$APPTAG totalBrainVolume: $totalBrainVolume"
     if [ -z "$totalBrainVolume" ]; then
-        echo "ERROR: Could not determine totalBrainVolume, computed from CerebralWhiteMatterVol = '${CerebralWhiteMatterVol}' and TotalGray = '${TotalGray}' (subject='${$subject}')."
+        echo "ERROR: Could not determine totalBrainVolume, computed from CerebralWhiteMatterVol = '${CerebralWhiteMatterVol}' and TotalGray = '${TotalGray}' (subject='${subject}')."
         exit 1
     fi
 
@@ -315,5 +315,5 @@ rm "$TMP_FILE" BrainStats.hdr
 echo "$APPTAG Results for the $NUM_SUBJECTS subjects are in '$OUTPUT_FILE'."
 
 if [ ${NUM_SUBJECTS_MISSING_FILES} -gt 0 ]; then
-    echo "$APPTAG WARNING: $NUM_SUBJECTS_MISSING_FILES subject(s) were is missing required data files (see above). Their values are NA in the results."
+    echo "$APPTAG WARNING: $NUM_SUBJECTS_MISSING_FILES subject(s) were missing required data files (see above). Their values are NA in the results."
 fi
